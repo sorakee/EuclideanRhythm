@@ -19,7 +19,7 @@ EuclideanRhythmAudioProcessor::EuclideanRhythmAudioProcessor()
                       #endif
                        .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
                      #endif
-                       )
+                       ), apvts (*this, nullptr, "PARAMETERS", createParameterLayout())
 #endif
 {
 }
@@ -182,6 +182,20 @@ void EuclideanRhythmAudioProcessor::setStateInformation (const void* data, int s
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
 }
+
+juce::AudioProcessorValueTreeState::ParameterLayout 
+    EuclideanRhythmAudioProcessor::createParameterLayout()
+{
+    juce::AudioProcessorValueTreeState::ParameterLayout layout;
+
+    layout.add(std::make_unique<juce::AudioParameterInt>("Steps", "Steps", 1, 64, 16));
+    layout.add(std::make_unique<juce::AudioParameterInt>("Beats", "Beats", 1, 64, 16));
+    layout.add(std::make_unique<juce::AudioParameterInt>("Offset", "Offset", 1, 64, 16));
+    // TODO: Add velocity/speed parameter to manipulate 
+    // how fast it takes to move between steps
+
+    return layout;
+}    
 
 //==============================================================================
 // This creates new instances of the plugin..
