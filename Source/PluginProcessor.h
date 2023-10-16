@@ -57,6 +57,7 @@ public:
     void setStateInformation (const void* data, int sizeInBytes) override;
 
 private:
+    std::vector<int> remainders;
     juce::AudioProcessorValueTreeState::ParameterLayout 
         createParameterLayout();
     juce::AudioProcessorValueTreeState apvts;

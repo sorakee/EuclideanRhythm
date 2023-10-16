@@ -10,12 +10,18 @@
 #include "PluginEditor.h"
 
 //==============================================================================
-EuclideanRhythmAudioProcessorEditor::EuclideanRhythmAudioProcessorEditor (EuclideanRhythmAudioProcessor& p)
-    : AudioProcessorEditor (&p), audioProcessor (p)
+EuclideanRhythmAudioProcessorEditor::EuclideanRhythmAudioProcessorEditor (EuclideanRhythmAudioProcessor& p, 
+    juce::AudioProcessorValueTreeState& apvts)
+    : AudioProcessorEditor (&p), audioProcessor (p), apvts (apvts)
 {
+    for (auto* component : getComponents())
+    {
+        addAndMakeVisible(component);
+    }
+
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
-    setSize (400, 300);
+    setSize (800, 400);
 }
 
 EuclideanRhythmAudioProcessorEditor::~EuclideanRhythmAudioProcessorEditor()
@@ -37,4 +43,17 @@ void EuclideanRhythmAudioProcessorEditor::resized()
 {
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
+
+    // TODO: Add slider components to the GUI
+
+}
+
+std::vector<juce::Component*> EuclideanRhythmAudioProcessorEditor::getComponents()
+{
+    return
+    {
+        &stepSlider,
+        &beatSlider,
+        &offsetSlider
+    };
 }

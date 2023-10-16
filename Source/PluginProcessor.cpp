@@ -166,7 +166,9 @@ bool EuclideanRhythmAudioProcessor::hasEditor() const
 
 juce::AudioProcessorEditor* EuclideanRhythmAudioProcessor::createEditor()
 {
-    return new EuclideanRhythmAudioProcessorEditor (*this);
+    return new EuclideanRhythmAudioProcessorEditor (*this, apvts);
+    // Debugging purposes
+    // return new juce::GenericAudioProcessorEditor(*this);
 }
 
 //==============================================================================
@@ -188,7 +190,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout
 {
     juce::AudioProcessorValueTreeState::ParameterLayout layout;
 
-    for (int i = 0; i < 3; ++i)
+    for (int i = 1; i <= 3; ++i)
     {
         auto stepsParam = juce::String(std::string("Steps ") + std::to_string(i));
         auto beatsParam = juce::String(std::string("Beats ") + std::to_string(i));
@@ -199,13 +201,24 @@ juce::AudioProcessorValueTreeState::ParameterLayout
     }
     // TODO: Add velocity/speed parameter to manipulate 
     // how fast it takes to move between steps
-
+    
     return layout;
 }
 
 int EuclideanRhythmAudioProcessor::gcd(int steps, int beats)
 {
-    return 0;
+    int temp = 0;
+    while (beats != 0)
+    {
+        temp = beats;
+        beats = steps % beats;
+        // Stores remainder values
+        remainders.push_back(beats);
+        steps = temp;
+    }
+
+    // GCD between 'steps' and 'beats'
+    return steps;
 }
 
 //==============================================================================
