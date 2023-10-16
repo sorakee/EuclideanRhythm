@@ -188,14 +188,25 @@ juce::AudioProcessorValueTreeState::ParameterLayout
 {
     juce::AudioProcessorValueTreeState::ParameterLayout layout;
 
-    layout.add(std::make_unique<juce::AudioParameterInt>("Steps", "Steps", 1, 64, 16));
-    layout.add(std::make_unique<juce::AudioParameterInt>("Beats", "Beats", 1, 64, 16));
-    layout.add(std::make_unique<juce::AudioParameterInt>("Offset", "Offset", 1, 64, 16));
+    for (int i = 0; i < 3; ++i)
+    {
+        auto stepsParam = juce::String(std::string("Steps ") + std::to_string(i));
+        auto beatsParam = juce::String(std::string("Beats ") + std::to_string(i));
+        auto offsetParam = juce::String(std::string("Offset ") + std::to_string(i));
+        layout.add(std::make_unique<juce::AudioParameterInt>(stepsParam, stepsParam, 1, 64, 16));
+        layout.add(std::make_unique<juce::AudioParameterInt>(beatsParam, beatsParam, 1, 64, 16));
+        layout.add(std::make_unique<juce::AudioParameterInt>(offsetParam, offsetParam, 1, 64, 16));
+    }
     // TODO: Add velocity/speed parameter to manipulate 
     // how fast it takes to move between steps
 
     return layout;
-}    
+}
+
+int EuclideanRhythmAudioProcessor::gcd(int steps, int beats)
+{
+    return 0;
+}
 
 //==============================================================================
 // This creates new instances of the plugin..

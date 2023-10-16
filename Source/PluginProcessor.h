@@ -60,6 +60,8 @@ private:
     juce::AudioProcessorValueTreeState::ParameterLayout 
         createParameterLayout();
     juce::AudioProcessorValueTreeState apvts;
+    // Euclidean Algorithm
+    int gcd (int steps, int beats);
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EuclideanRhythmAudioProcessor)
