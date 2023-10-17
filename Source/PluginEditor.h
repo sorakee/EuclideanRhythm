@@ -39,9 +39,12 @@ private:
     EuclideanRhythmAudioProcessor& audioProcessor;
 
     juce::AudioProcessorValueTreeState& apvts;
-    RotarySlider stepSlider, beatSlider, offsetSlider;
+    RotarySlider stepSlider1, beatSlider1, offsetSlider1;
+    RotarySlider stepSlider2, beatSlider2, offsetSlider2;
+    RotarySlider stepSlider3, beatSlider3, offsetSlider3;
+    RotarySlider stepSlider4, beatSlider4, offsetSlider4;
 
-    std::vector<juce::Component*> getComponents();
+    std::vector<juce::Component*> getComponents(int compNum);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EuclideanRhythmAudioProcessorEditor)
 };
