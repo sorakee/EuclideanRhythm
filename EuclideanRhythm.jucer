@@ -12,6 +12,11 @@
             file="Source/PluginEditor.cpp"/>
       <FILE id="sfaRHK" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
     </GROUP>
+    <GROUP id="{1CD27937-5027-7B16-FFCC-CFAA72DC8D6E}" name="UI">
+      <FILE id="YmjQsb" name="Knobs.cpp" compile="1" resource="0" file="Source/UI/Knobs.cpp"/>
+      <FILE id="vS8ypL" name="Knobs.h" compile="0" resource="0" file="Source/UI/Knobs.h"/>
+      <FILE id="V9XZ9I" name="RotarySlider.h" compile="0" resource="0" file="Source/UI/RotarySlider.h"/>
+    </GROUP>
   </MAINGROUP>
   <MODULES>
     <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>

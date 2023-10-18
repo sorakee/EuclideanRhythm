@@ -10,14 +10,7 @@
 
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
-
-struct RotarySlider : juce::Slider
-{
-    RotarySlider() : juce::Slider(juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag,
-        juce::Slider::TextEntryBoxPosition::TextBoxBelow)
-    {
-    }
-};
+#include "UI/Knobs.h"
 
 //==============================================================================
 /**
@@ -37,22 +30,8 @@ private:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
     EuclideanRhythmAudioProcessor& audioProcessor;
-
     juce::AudioProcessorValueTreeState& apvts;
-
-    RotarySlider stepSlider1, beatSlider1, offsetSlider1;
-    RotarySlider stepSlider2, beatSlider2, offsetSlider2;
-    RotarySlider stepSlider3, beatSlider3, offsetSlider3;
-    RotarySlider stepSlider4, beatSlider4, offsetSlider4;
-
-    using SliderAttachment = juce::AudioProcessorValueTreeState::SliderAttachment;
-
-    std::unique_ptr<SliderAttachment> stepAttach1, beatAttach1, offsetAttach1;
-    std::unique_ptr<SliderAttachment> stepAttach2, beatAttach2, offsetAttach2;
-    std::unique_ptr<SliderAttachment> stepAttach3, beatAttach3, offsetAttach3;
-    std::unique_ptr<SliderAttachment> stepAttach4, beatAttach4, offsetAttach4;
-
-    std::vector<juce::Component*> getComponents(int compNum);
+    Knobs knobs;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EuclideanRhythmAudioProcessorEditor)
 };
