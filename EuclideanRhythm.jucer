@@ -13,8 +13,15 @@
       <FILE id="sfaRHK" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
     </GROUP>
     <GROUP id="{1CD27937-5027-7B16-FFCC-CFAA72DC8D6E}" name="UI">
+      <GROUP id="{00683546-429A-EE93-363B-EF1BE0E9654E}" name="CustomLNF">
+        <FILE id="QWtLC1" name="RedSliderLNF.h" compile="0" resource="0" file="Source/UI/RedSliderLNF.h"/>
+        <FILE id="MbPS3C" name="RedSliderLNF.cpp" compile="1" resource="0"
+              file="Source/UI/RedSliderLNF.cpp"/>
+      </GROUP>
       <FILE id="YmjQsb" name="Knobs.cpp" compile="1" resource="0" file="Source/UI/Knobs.cpp"/>
       <FILE id="vS8ypL" name="Knobs.h" compile="0" resource="0" file="Source/UI/Knobs.h"/>
+      <FILE id="ayaiGT" name="RotarySlider.cpp" compile="1" resource="0"
+            file="Source/UI/RotarySlider.cpp"/>
       <FILE id="V9XZ9I" name="RotarySlider.h" compile="0" resource="0" file="Source/UI/RotarySlider.h"/>
     </GROUP>
   </MAINGROUP>

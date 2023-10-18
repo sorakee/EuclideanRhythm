@@ -1,7 +1,7 @@
 /*
   ==============================================================================
 
-	This file contains the code for Knob components.
+	This file contains the code for the main components.
 
   ==============================================================================
 */
@@ -23,9 +23,14 @@ private:
 
 	using SliderAttachment = juce::AudioProcessorValueTreeState::SliderAttachment;
 
+	// TODO : Make rotary classes of different colours
+	// Red Knobs
 	RotarySlider stepSlider1, beatSlider1, offsetSlider1;
+	// Green Knobs
 	RotarySlider stepSlider2, beatSlider2, offsetSlider2;
+	// Blue Knobs
 	RotarySlider stepSlider3, beatSlider3, offsetSlider3;
+	// Yellow Knows
 	RotarySlider stepSlider4, beatSlider4, offsetSlider4;
 
 	std::unique_ptr<SliderAttachment> stepAttach1, beatAttach1, offsetAttach1;
@@ -34,6 +39,7 @@ private:
 	std::unique_ptr<SliderAttachment> stepAttach4, beatAttach4, offsetAttach4;
 
 	std::vector<juce::Slider*> getSliders(int compNum);
+	void attachSliders (juce::AudioProcessorValueTreeState& apvts, int compNum);
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Knobs)
 };

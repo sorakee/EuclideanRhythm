@@ -14,6 +14,12 @@ EuclideanRhythmAudioProcessorEditor::EuclideanRhythmAudioProcessorEditor (Euclid
     juce::AudioProcessorValueTreeState& apvts)
     : AudioProcessorEditor (&p), audioProcessor (p), apvts (apvts), knobs (apvts)
 {
+    // Placeholder
+    placeholder.setColour(juce::TextButton::buttonColourId,
+        juce::Colours::cornflowerblue);
+    placeholder.setButtonText("PLACEHOLDER");
+    addAndMakeVisible(placeholder);
+
     addAndMakeVisible(knobs);
 
     // Make sure that before the constructor has finished, you've set the
@@ -23,13 +29,13 @@ EuclideanRhythmAudioProcessorEditor::EuclideanRhythmAudioProcessorEditor (Euclid
     const juce::Displays::Display* screen = juce::Desktop::getInstance().getDisplays().getPrimaryDisplay();
     if (screen != nullptr)
     {
-        setResizeLimits(700, 350,
-            (screen->userArea).getWidth(), 
-            (screen->userArea).getHeight());
+        setResizeLimits(800, 400,
+            static_cast<int>((screen->userArea).getWidth() * 0.75),
+            static_cast<int>((screen->userArea).getHeight() * 0.75));
     }
     else
     {
-        setResizeLimits(700, 350, 1200, 600);
+        setResizeLimits(800, 400, 1200, 600);
     }
     
     getConstrainer()->setFixedAspectRatio(2.0);
@@ -48,12 +54,8 @@ void EuclideanRhythmAudioProcessorEditor::paint (juce::Graphics& g)
     auto area = getLocalBounds();
     // Assign the left half of main area a space for the visualizer
     auto visualizerArea = area.removeFromLeft(area.getWidth() * 0.5);
-    g.setColour(juce::Colours::black);
+    g.setColour(juce::Colour(0.f, 0.f, 13.f / 255.f, 1.f));
     g.fillRect(visualizerArea);
-
-    // g.setColour (juce::Colours::white);
-    // g.setFont (15.0f);
-    // g.drawFittedText ("Hello World!", getLocalBounds(), juce::Justification::centred, 1);
 }
 
 void EuclideanRhythmAudioProcessorEditor::resized()
@@ -62,6 +64,12 @@ void EuclideanRhythmAudioProcessorEditor::resized()
     // subcomponents in your editor..
     auto area = getLocalBounds();
 
-    // Reserve right half of the main area for knobs and buttons
-    knobs.setBounds(area.removeFromRight(area.getWidth() * 0.5));
+    // Reserve right half of the main area for control Area
+    auto controlArea = area.removeFromRight(area.getWidth() * 0.5);
+
+    // Reserve upper control area for knobs
+    knobs.setBounds(controlArea.removeFromTop(controlArea.getHeight() * 0.8));
+
+    // Reserve bottom control area for playback buttons
+    placeholder.setBounds(controlArea);
 }

@@ -1,11 +1,15 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "CustomLNF/RedSliderLNF.h"
 
 struct RotarySlider : juce::Slider
 {
-    RotarySlider() : juce::Slider(juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag,
-        juce::Slider::TextEntryBoxPosition::TextBoxBelow)
-    {
-    }
+public:
+    RotarySlider();
+    ~RotarySlider();
+
+    juce::Rectangle<int> getSliderBounds() const;
+private:
+    RedSliderLNF lnf;
 };

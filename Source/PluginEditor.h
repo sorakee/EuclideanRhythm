@@ -32,6 +32,7 @@ private:
     EuclideanRhythmAudioProcessor& audioProcessor;
     juce::AudioProcessorValueTreeState& apvts;
     Knobs knobs;
+    juce::TextButton placeholder;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EuclideanRhythmAudioProcessorEditor)
 };
