@@ -20,9 +20,8 @@
       </GROUP>
       <FILE id="YmjQsb" name="Knobs.cpp" compile="1" resource="0" file="Source/UI/Knobs.cpp"/>
       <FILE id="vS8ypL" name="Knobs.h" compile="0" resource="0" file="Source/UI/Knobs.h"/>
-      <FILE id="ayaiGT" name="RotarySlider.cpp" compile="1" resource="0"
-            file="Source/UI/RotarySlider.cpp"/>
-      <FILE id="V9XZ9I" name="RotarySlider.h" compile="0" resource="0" file="Source/UI/RotarySlider.h"/>
+      <FILE id="ayaiGT" name="RedSlider.cpp" compile="1" resource="0" file="Source/UI/RedSlider.cpp"/>
+      <FILE id="V9XZ9I" name="RedSlider.h" compile="0" resource="0" file="Source/UI/RedSlider.h"/>
     </GROUP>
   </MAINGROUP>
   <MODULES>

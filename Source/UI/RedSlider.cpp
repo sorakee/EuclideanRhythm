@@ -8,20 +8,20 @@
   ==============================================================================
 */
 
-#include "RotarySlider.h"
+#include "RedSlider.h"
 
-RotarySlider::RotarySlider() : juce::Slider(juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag,
+RedSlider::RedSlider() : juce::Slider(juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag,
     juce::Slider::TextEntryBoxPosition::TextBoxBelow)
 {
     setLookAndFeel(&lnf);
 }
 
-RotarySlider::~RotarySlider()
+RedSlider::~RedSlider()
 {
     setLookAndFeel(nullptr);
 }
 
-juce::Rectangle<int> RotarySlider::getSliderBounds() const
+juce::Rectangle<int> RedSlider::getSliderBounds() const
 {
     return getLocalBounds();
 }

@@ -9,7 +9,7 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "RotarySlider.h"
+#include "RedSlider.h"
 
 class Knobs : public juce::Component
 {
@@ -25,13 +25,13 @@ private:
 
 	// TODO : Make rotary classes of different colours
 	// Red Knobs
-	RotarySlider stepSlider1, beatSlider1, offsetSlider1;
+	RedSlider stepSlider1, beatSlider1, offsetSlider1;
 	// Green Knobs
-	RotarySlider stepSlider2, beatSlider2, offsetSlider2;
+	RedSlider stepSlider2, beatSlider2, offsetSlider2;
 	// Blue Knobs
-	RotarySlider stepSlider3, beatSlider3, offsetSlider3;
+	RedSlider stepSlider3, beatSlider3, offsetSlider3;
 	// Yellow Knows
-	RotarySlider stepSlider4, beatSlider4, offsetSlider4;
+	RedSlider stepSlider4, beatSlider4, offsetSlider4;
 
 	std::unique_ptr<SliderAttachment> stepAttach1, beatAttach1, offsetAttach1;
 	std::unique_ptr<SliderAttachment> stepAttach2, beatAttach2, offsetAttach2;
