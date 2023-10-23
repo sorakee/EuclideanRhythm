@@ -12,11 +12,11 @@
 
 #include <JuceHeader.h>
 
-class RedSliderLNF : public juce::LookAndFeel_V4
+class BlueSliderLNF : public juce::LookAndFeel_V4
 {
 public:
-    RedSliderLNF();
-    ~RedSliderLNF();
+    BlueSliderLNF();
+    ~BlueSliderLNF();
 
     void drawRotarySlider(juce::Graphics& g, int x, int y, int width, int height, float sliderPos,
         const float rotaryStartAngle, const float rotaryEndAngle, juce::Slider&) override;

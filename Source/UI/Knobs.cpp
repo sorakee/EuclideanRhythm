@@ -73,7 +73,7 @@ void Knobs::resized()
         .removeFromBottom(knobsUpperLeftArea.getWidth() * 0.2);
     // Top-Left Toggle
     auto toggleUpperLeftArea = knobsUpperLeftArea
-        .removeFromTop(knobsUpperLeftArea.getWidth() * 0.05);
+        .removeFromTop(knobsUpperLeftArea.getWidth() * 0.1);
 
     // Top-left Knobs
     stepSlider1.setBounds(knobsUpperLeftArea.removeFromLeft(
@@ -87,7 +87,7 @@ void Knobs::resized()
         .removeFromBottom(knobsUpperArea.getWidth() * 0.2);
     // Top-right Toggle
     auto toggleUpperRightArea = knobsUpperArea
-        .removeFromTop(knobsUpperArea.getWidth() * 0.05);
+        .removeFromTop(knobsUpperArea.getWidth() * 0.1);
 
     // Top-right Knobs
     stepSlider2.setBounds(knobsUpperArea.removeFromLeft(
@@ -101,7 +101,7 @@ void Knobs::resized()
         .removeFromBottom(knobsBottomLeftArea.getWidth() * 0.2);
     // Bottom-left Toggle
     auto toggleBottomLeftArea = knobsBottomLeftArea
-        .removeFromTop(knobsBottomLeftArea.getWidth() * 0.05);
+        .removeFromTop(knobsBottomLeftArea.getWidth() * 0.1);
 
     // Bottom-left Knobs
     stepSlider3.setBounds(knobsBottomLeftArea.removeFromLeft(
@@ -115,7 +115,7 @@ void Knobs::resized()
         .removeFromBottom(area.getWidth() * 0.2);
     // Bottom-right Toggle
     auto toggleBottomRightArea = area
-        .removeFromTop(area.getWidth() * 0.05);
+        .removeFromTop(area.getWidth() * 0.1);
 
     // Bottom-right Knobs
     stepSlider4.setBounds(area.removeFromLeft(

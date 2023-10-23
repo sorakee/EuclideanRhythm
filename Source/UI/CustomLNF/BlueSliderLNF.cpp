@@ -8,17 +8,17 @@
   ==============================================================================
 */
 
-#include "RedSliderLNF.h"
+#include "BlueSliderLNF.h"
 
-RedSliderLNF::RedSliderLNF()
+BlueSliderLNF::BlueSliderLNF()
 {
 }
 
-RedSliderLNF::~RedSliderLNF()
+BlueSliderLNF::~BlueSliderLNF()
 {
 }
 
-void RedSliderLNF::drawRotarySlider(juce::Graphics& g, int x, int y, int width, int height, float sliderPos,
+void BlueSliderLNF::drawRotarySlider(juce::Graphics& g, int x, int y, int width, int height, float sliderPos,
     const float rotaryStartAngle, const float rotaryEndAngle, juce::Slider& slider)
 {
     auto radius = (float)juce::jmin(width / 2, height / 2) - 10.0f;
@@ -30,7 +30,7 @@ void RedSliderLNF::drawRotarySlider(juce::Graphics& g, int x, int y, int width, 
     auto angle = rotaryStartAngle + sliderPos * (rotaryEndAngle - rotaryStartAngle);
 
     // Fill Ellipse
-    g.setColour(juce::Colours::indianred);
+    g.setColour(juce::Colours::skyblue);
     g.fillEllipse(rx, ry, rw, rw);
 
     // Outline of Ellipse

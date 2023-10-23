@@ -14,14 +14,32 @@
     </GROUP>
     <GROUP id="{1CD27937-5027-7B16-FFCC-CFAA72DC8D6E}" name="UI">
       <GROUP id="{00683546-429A-EE93-363B-EF1BE0E9654E}" name="CustomLNF">
-        <FILE id="QWtLC1" name="RedSliderLNF.h" compile="0" resource="0" file="Source/UI/RedSliderLNF.h"/>
-        <FILE id="MbPS3C" name="RedSliderLNF.cpp" compile="1" resource="0"
-              file="Source/UI/RedSliderLNF.cpp"/>
+        <FILE id="ct0y6Q" name="BlueSliderLNF.cpp" compile="1" resource="0"
+              file="Source/UI/CustomLNF/BlueSliderLNF.cpp"/>
+        <FILE id="zaBmi1" name="BlueSliderLNF.h" compile="0" resource="0" file="Source/UI/CustomLNF/BlueSliderLNF.h"/>
+        <FILE id="K3fmSI" name="GreenSliderLNF.cpp" compile="1" resource="0"
+              file="Source/UI/CustomLNF/GreenSliderLNF.cpp"/>
+        <FILE id="rMbK82" name="GreenSliderLNF.h" compile="0" resource="0"
+              file="Source/UI/CustomLNF/GreenSliderLNF.h"/>
+        <FILE id="DPIxKV" name="RedSliderLNF.cpp" compile="1" resource="0"
+              file="Source/UI/CustomLNF/RedSliderLNF.cpp"/>
+        <FILE id="QlhEB6" name="RedSliderLNF.h" compile="0" resource="0" file="Source/UI/CustomLNF/RedSliderLNF.h"/>
+        <FILE id="dF7xdG" name="YellowSliderLNF.cpp" compile="1" resource="0"
+              file="Source/UI/CustomLNF/YellowSliderLNF.cpp"/>
+        <FILE id="h5mTZG" name="YellowSliderLNF.h" compile="0" resource="0"
+              file="Source/UI/CustomLNF/YellowSliderLNF.h"/>
       </GROUP>
+      <FILE id="XV2Tnw" name="BlueSlider.cpp" compile="1" resource="0" file="Source/UI/BlueSlider.cpp"/>
+      <FILE id="htoFH7" name="BlueSlider.h" compile="0" resource="0" file="Source/UI/BlueSlider.h"/>
+      <FILE id="Y6XOWr" name="GreenSlider.cpp" compile="1" resource="0" file="Source/UI/GreenSlider.cpp"/>
+      <FILE id="PDj8lO" name="GreenSlider.h" compile="0" resource="0" file="Source/UI/GreenSlider.h"/>
       <FILE id="YmjQsb" name="Knobs.cpp" compile="1" resource="0" file="Source/UI/Knobs.cpp"/>
       <FILE id="vS8ypL" name="Knobs.h" compile="0" resource="0" file="Source/UI/Knobs.h"/>
       <FILE id="ayaiGT" name="RedSlider.cpp" compile="1" resource="0" file="Source/UI/RedSlider.cpp"/>
       <FILE id="V9XZ9I" name="RedSlider.h" compile="0" resource="0" file="Source/UI/RedSlider.h"/>
+      <FILE id="sRkz2H" name="YellowSlider.cpp" compile="1" resource="0"
+            file="Source/UI/YellowSlider.cpp"/>
+      <FILE id="xCBuZb" name="YellowSlider.h" compile="0" resource="0" file="Source/UI/YellowSlider.h"/>
     </GROUP>
   </MAINGROUP>
   <MODULES>

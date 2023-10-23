@@ -10,6 +10,9 @@
 
 #include <JuceHeader.h>
 #include "RedSlider.h"
+#include "GreenSlider.h"
+#include "BlueSlider.h"
+#include "YellowSlider.h"
 
 class Knobs : public juce::Component
 {
@@ -23,15 +26,14 @@ private:
 
 	using SliderAttachment = juce::AudioProcessorValueTreeState::SliderAttachment;
 
-	// TODO : Make rotary classes of different colours
 	// Red Knobs
 	RedSlider stepSlider1, beatSlider1, offsetSlider1;
 	// Green Knobs
-	RedSlider stepSlider2, beatSlider2, offsetSlider2;
+	GreenSlider stepSlider2, beatSlider2, offsetSlider2;
 	// Blue Knobs
-	RedSlider stepSlider3, beatSlider3, offsetSlider3;
+	BlueSlider stepSlider3, beatSlider3, offsetSlider3;
 	// Yellow Knows
-	RedSlider stepSlider4, beatSlider4, offsetSlider4;
+	YellowSlider stepSlider4, beatSlider4, offsetSlider4;
 
 	std::unique_ptr<SliderAttachment> stepAttach1, beatAttach1, offsetAttach1;
 	std::unique_ptr<SliderAttachment> stepAttach2, beatAttach2, offsetAttach2;
