@@ -35,15 +35,33 @@ void BlueSliderLNF::drawRotarySlider(juce::Graphics& g, int x, int y, int width,
 
     // Outline of Ellipse
     g.setColour(juce::Colours::black);
-    g.drawEllipse(rx, ry, rw, rw, 1.0f);
+    g.drawEllipse(rx, ry, rw, rw, radius * 0.1f);
 
     juce::Path p;
-    auto pointerLength = radius * 0.33f;
-    auto pointerThickness = 2.0f;
+    auto pointerLength = radius * 0.75f;
+    auto pointerThickness = radius * 0.2f;
     p.addRectangle(-pointerThickness * 0.5f, -radius, pointerThickness, pointerLength);
     p.applyTransform(juce::AffineTransform::rotation(angle).translated(centreX, centreY));
 
     // Pointer
     g.setColour(juce::Colours::black);
     g.fillPath(p);
+
+    juce::Rectangle<float> textArea;
+    juce::String const text = juce::String(slider.getValue());
+    
+    auto font = g.getCurrentFont();
+    font.setHeight(slider.proportionOfWidth(0.225f));
+    g.setFont(font);
+
+    // Text Background
+    g.setColour(juce::Colours::black);
+    textArea.setSize(2 * radius * 0.9f, font.getHeight() + 0.5f);
+    textArea.setCentre(centreX, centreY);
+    textArea.setY(centreY * 1.705f);
+    g.fillRoundedRectangle(textArea, radius * 0.25f);
+
+    // Text
+    g.setColour(juce::Colours::white);
+    g.drawFittedText(text, slider.getLocalBounds(), juce::Justification::centredBottom, 1);
 }

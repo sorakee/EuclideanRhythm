@@ -11,7 +11,7 @@
 #include "BlueSlider.h"
 
 BlueSlider::BlueSlider() : juce::Slider(juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag,
-    juce::Slider::TextEntryBoxPosition::TextBoxBelow)
+    juce::Slider::TextEntryBoxPosition::NoTextBox)
 {
     setLookAndFeel(&lnf);
 }

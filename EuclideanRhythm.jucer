@@ -37,6 +37,9 @@
       <FILE id="vS8ypL" name="Knobs.h" compile="0" resource="0" file="Source/UI/Knobs.h"/>
       <FILE id="ayaiGT" name="RedSlider.cpp" compile="1" resource="0" file="Source/UI/RedSlider.cpp"/>
       <FILE id="V9XZ9I" name="RedSlider.h" compile="0" resource="0" file="Source/UI/RedSlider.h"/>
+      <FILE id="uhh7z8" name="State.h" compile="0" resource="0" file="Source/UI/State.h"/>
+      <FILE id="cskGin" name="Toggle.cpp" compile="1" resource="0" file="Source/UI/Toggle.cpp"/>
+      <FILE id="Xepkh9" name="Toggle.h" compile="0" resource="0" file="Source/UI/Toggle.h"/>
       <FILE id="sRkz2H" name="YellowSlider.cpp" compile="1" resource="0"
             file="Source/UI/YellowSlider.cpp"/>
       <FILE id="xCBuZb" name="YellowSlider.h" compile="0" resource="0" file="Source/UI/YellowSlider.h"/>
