@@ -14,6 +14,7 @@ RedSlider::RedSlider() : juce::Slider(juce::Slider::SliderStyle::RotaryHorizonta
     juce::Slider::TextEntryBoxPosition::NoTextBox)
 {
     setLookAndFeel(&lnf);
+    setEnabled(false);
 }
 
 RedSlider::~RedSlider()

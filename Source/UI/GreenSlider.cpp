@@ -14,6 +14,7 @@ GreenSlider::GreenSlider() : juce::Slider(juce::Slider::SliderStyle::RotaryHoriz
     juce::Slider::TextEntryBoxPosition::NoTextBox)
 {
     setLookAndFeel(&lnf);
+    setEnabled(false);
 }
 
 GreenSlider::~GreenSlider()

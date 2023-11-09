@@ -14,6 +14,7 @@ YellowSlider::YellowSlider() : juce::Slider(juce::Slider::SliderStyle::RotaryHor
     juce::Slider::TextEntryBoxPosition::NoTextBox)
 {
     setLookAndFeel(&lnf);
+    setEnabled(0);
 }
 
 YellowSlider::~YellowSlider()

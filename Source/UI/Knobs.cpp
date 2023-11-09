@@ -11,11 +11,19 @@
 
 Knobs::Knobs(juce::AudioProcessorValueTreeState& apvts)
 {
+    // Initialise components
+    // Sliders are disabled by default
     initComponents();
 
     using SliderAttachment = juce::AudioProcessorValueTreeState::SliderAttachment;
     // Make connection between rotary slider and parameter in 'apvts'
     attachSliders(apvts, 4);
+    
+    // Toggle knob groups upon toggle button's state change
+    toggleSliders();
+
+    // Ensure beat and offset values does not exceed step value
+    changeLimit(apvts);
 }
 
 Knobs::~Knobs()
@@ -212,6 +220,55 @@ std::vector<juce::Component*> Knobs::getComponents(int compNum)
     return comps;
 }
 
+std::vector<juce::Slider*> Knobs::getSliders(int compNum)
+{
+    std::vector<juce::Slider*> comps;
+
+    switch (compNum + 1)
+    {
+    case 1:
+        comps = {
+            &stepSlider1,
+            &beatSlider1,
+            &offsetSlider1,
+        };
+        break;
+    case 2:
+        comps = {
+            &stepSlider2,
+            &beatSlider2,
+            &offsetSlider2,
+        };
+        break;
+    case 3:
+        comps = {
+            &stepSlider3,
+            &beatSlider3,
+            &offsetSlider3,
+        };
+        break;
+    case 4:
+        comps = {
+            &stepSlider4,
+            &beatSlider4,
+            &offsetSlider4,
+        };
+        break;
+    }
+
+    return comps;
+}
+
+std::vector<juce::ShapeButton*> Knobs::getToggles()
+{
+    return {
+        &toggleRed,
+        &toggleGreen,
+        &toggleBlue,
+        &toggleYellow
+    };
+}
+
 void Knobs::initComponents()
 {
     const int noOfComps = 4;
@@ -315,4 +372,126 @@ void Knobs::attachSliders(juce::AudioProcessorValueTreeState& apvts, int compNum
             break;
         }
     }
+}
+
+void Knobs::toggleSliders()
+{
+    toggleRed.onStateChange = [this]() 
+        {
+            for (auto* slider : getSliders(0))
+            {
+                if (toggleRed.getToggleState())
+                {
+                    slider->setEnabled(true);
+                    continue;
+                }
+
+                slider->setEnabled(false);
+            }
+        };
+
+    toggleGreen.onStateChange = [this]()
+        {
+            for (auto* slider : getSliders(1))
+            {
+                if (toggleGreen.getToggleState())
+                {
+                    slider->setEnabled(true);
+                    continue;
+                }
+
+                slider->setEnabled(false);
+            }
+        };
+
+    toggleBlue.onStateChange = [this]()
+        {
+            for (auto* slider : getSliders(2))
+            {
+                if (toggleBlue.getToggleState())
+                {
+                    slider->setEnabled(true);
+                    continue;
+                }
+
+                slider->setEnabled(false);
+            }
+        };
+
+    toggleYellow.onStateChange = [this]()
+        {
+            for (auto* slider : getSliders(3))
+            {
+                if (toggleYellow.getToggleState())
+                {
+                    slider->setEnabled(true);
+                    continue;
+                }
+
+                slider->setEnabled(false);
+            }
+        };
+}
+
+void Knobs::changeLimit(juce::AudioProcessorValueTreeState& apvts)
+{
+    // TODO
+
+    stepSlider1.onValueChange = [this, &apvts]() 
+        {
+            if (beatSlider1.getValue() > stepSlider1.getValue())
+            {
+                beatSlider1.setValue(stepSlider1.getValue());
+            }
+
+            if (offsetSlider1.getValue() > stepSlider1.getValue())
+            {
+                offsetSlider1.setValue(stepSlider1.getValue());
+            }
+
+            auto beatRange = beatSlider1.getRange();
+            auto sliderRange = offsetSlider1.getRange();
+            beatSlider1.setRange(0, stepSlider1.getValue(), 1);
+            offsetSlider1.setRange(0, stepSlider1.getValue(), 1);
+
+            juce::Logger::writeToLog("Slider Value : " + juce::String(beatSlider1.getValue()));
+
+            beatSlider1.repaint();
+            offsetSlider1.repaint();
+        };
+
+    stepSlider1.onDragEnd = [this, &apvts]()
+        {
+            juce::Logger::writeToLog("APVTS Value : " + juce::String(apvts.getRawParameterValue("Beats 1")->load()));
+        };
+
+    stepSlider2.onDragEnd = [this]()
+        {
+            auto beatRange = beatSlider2.getRange();
+            auto sliderRange = offsetSlider2.getRange();
+            beatSlider2.setRange(0, stepSlider2.getValue(), 1);
+            offsetSlider2.setRange(0, stepSlider2.getValue(), 1);
+            beatSlider2.repaint();
+            offsetSlider2.repaint();
+        };
+
+    stepSlider3.onDragEnd = [this]()
+        {
+            auto beatRange = beatSlider3.getRange();
+            auto sliderRange = offsetSlider3.getRange();
+            beatSlider3.setRange(0, stepSlider3.getValue(), 1);
+            offsetSlider3.setRange(0, stepSlider3.getValue(), 1);
+            beatSlider3.repaint();
+            offsetSlider3.repaint();
+        };
+
+    stepSlider4.onDragEnd = [this]()
+        {
+            auto beatRange = beatSlider4.getRange();
+            auto sliderRange = offsetSlider4.getRange();
+            beatSlider4.setRange(0, stepSlider4.getValue(), 1);
+            offsetSlider4.setRange(0, stepSlider4.getValue(), 1);
+            beatSlider4.repaint();
+            offsetSlider4.repaint();
+        };
 }

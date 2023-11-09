@@ -23,6 +23,9 @@ public:
 
 	void paint(juce::Graphics&) override;
 	void resized() override;
+
+	std::vector<juce::Slider*> getSliders(int compNum);
+	std::vector<juce::ShapeButton*> getToggles();
 private:
 
 	using SliderAttachment = juce::AudioProcessorValueTreeState::SliderAttachment;
@@ -48,8 +51,11 @@ private:
 	std::unique_ptr<SliderAttachment> stepAttach4, beatAttach4, offsetAttach4;
 
 	std::vector<juce::Component*> getComponents(int compNum);
+	
 	void initComponents();
 	void attachSliders (juce::AudioProcessorValueTreeState& apvts, int compNum);
+	void toggleSliders();
+	void changeLimit(juce::AudioProcessorValueTreeState& apvts);
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Knobs)
 };

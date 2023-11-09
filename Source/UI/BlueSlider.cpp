@@ -14,6 +14,7 @@ BlueSlider::BlueSlider() : juce::Slider(juce::Slider::SliderStyle::RotaryHorizon
     juce::Slider::TextEntryBoxPosition::NoTextBox)
 {
     setLookAndFeel(&lnf);
+    setEnabled(false);
 }
 
 BlueSlider::~BlueSlider()

@@ -29,11 +29,11 @@ Toggle::Toggle() : juce::ShapeButton(juce::String("Toggle"),
                  juce::Colours::red);
 
     // DEBUGGING
-    this->onClick = [this]
+    /*this->onClick = [this]
         {
             juce::String state = (this->getToggleState()) ? "ON" : "OFF";
             juce::Logger::writeToLog(state);
-        };
+        }; */
 }
 
 Toggle::~Toggle() 
