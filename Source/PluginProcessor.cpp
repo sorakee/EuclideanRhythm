@@ -196,9 +196,9 @@ juce::AudioProcessorValueTreeState::ParameterLayout
         auto stepsParam = juce::String(std::string("Steps ") + std::to_string(i + 1));
         auto beatsParam = juce::String(std::string("Beats ") + std::to_string(i + 1));
         auto offsetParam = juce::String(std::string("Offset ") + std::to_string(i + 1));
-        layout.add(std::make_unique<juce::AudioParameterInt>(stepsParam, stepsParam, 1, 64, 16));
-        layout.add(std::make_unique<juce::AudioParameterInt>(beatsParam, beatsParam, 0, 64, 16));
-        layout.add(std::make_unique<juce::AudioParameterInt>(offsetParam, offsetParam, 0, 64, 0));
+        layout.add(std::make_unique<juce::AudioParameterInt>(stepsParam, stepsParam, 1, 48, 16));
+        layout.add(std::make_unique<juce::AudioParameterInt>(beatsParam, beatsParam, 0, 48, 16));
+        layout.add(std::make_unique<juce::AudioParameterInt>(offsetParam, offsetParam, 0, 48, 0));
     }
 
     // TODO (OPTIONAL) : Add velocity/speed parameter to manipulate 
