@@ -11,6 +11,7 @@
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
 #include "UI/Knobs.h"
+#include "UI/Visualizer.h"
 
 //==============================================================================
 /**
@@ -32,6 +33,7 @@ private:
     EuclideanRhythmAudioProcessor& audioProcessor;
     juce::AudioProcessorValueTreeState& apvts;
     Knobs knobs;
+    Visualizer visualizer;
     juce::TextButton placeholder;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EuclideanRhythmAudioProcessorEditor)

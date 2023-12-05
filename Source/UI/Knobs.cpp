@@ -18,6 +18,8 @@ Knobs::Knobs(juce::AudioProcessorValueTreeState& apvts)
     using SliderAttachment = juce::AudioProcessorValueTreeState::SliderAttachment;
     // Make connection between rotary slider and parameter in 'apvts'
     attachSliders(apvts, 4);
+
+    initLimit();
     
     // Toggle knob groups upon toggle button's state change
     toggleSliders();
@@ -281,6 +283,26 @@ void Knobs::initComponents()
             addAndMakeVisible(component);
         }
     }
+
+   
+}
+
+void Knobs::initLimit()
+{
+    auto beatRange = beatSlider1.getRange();
+    auto sliderRange = offsetSlider1.getRange();
+
+    beatSlider1.setRange(0, stepSlider1.getValue(), 1);
+    offsetSlider1.setRange(0, stepSlider1.getValue(), 1);
+
+    beatSlider2.setRange(0, stepSlider2.getValue(), 1);
+    offsetSlider2.setRange(0, stepSlider2.getValue(), 1);
+
+    beatSlider3.setRange(0, stepSlider3.getValue(), 1);
+    offsetSlider3.setRange(0, stepSlider3.getValue(), 1);
+
+    beatSlider4.setRange(0, stepSlider4.getValue(), 1);
+    offsetSlider4.setRange(0, stepSlider4.getValue(), 1);
 }
 
 void Knobs::attachSliders(juce::AudioProcessorValueTreeState& apvts, int compNum)
@@ -458,11 +480,6 @@ void Knobs::changeLimit(juce::AudioProcessorValueTreeState& apvts)
 
             beatSlider1.repaint();
             offsetSlider1.repaint();
-        };
-
-    stepSlider1.onDragEnd = [this, &apvts]()
-        {
-            juce::Logger::writeToLog("APVTS Value : " + juce::String(apvts.getRawParameterValue("Beats 1")->load()));
         };
 
     stepSlider2.onDragEnd = [this]()

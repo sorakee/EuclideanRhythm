@@ -53,6 +53,7 @@ private:
 	std::vector<juce::Component*> getComponents(int compNum);
 	
 	void initComponents();
+	void initLimit();
 	void attachSliders (juce::AudioProcessorValueTreeState& apvts, int compNum);
 	void toggleSliders();
 	void changeLimit(juce::AudioProcessorValueTreeState& apvts);

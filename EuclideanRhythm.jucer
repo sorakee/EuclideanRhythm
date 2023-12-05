@@ -29,6 +29,12 @@
         <FILE id="h5mTZG" name="YellowSliderLNF.h" compile="0" resource="0"
               file="Source/UI/CustomLNF/YellowSliderLNF.h"/>
       </GROUP>
+      <GROUP id="{D4417F1D-0DC3-D66C-912F-AA779E9882B3}" name="VisualizerComponents">
+        <FILE id="kJk0Qs" name="Ellipse.cpp" compile="1" resource="0" file="Source/UI/VisualizerComponents/Ellipse.cpp"/>
+        <FILE id="uTZtdQ" name="Ellipse.h" compile="0" resource="0" file="Source/UI/VisualizerComponents/Ellipse.h"/>
+        <FILE id="pUHM0N" name="Needle.cpp" compile="1" resource="0" file="Source/UI/VisualizerComponents/Needle.cpp"/>
+        <FILE id="ETsknC" name="Needle.h" compile="0" resource="0" file="Source/UI/VisualizerComponents/Needle.h"/>
+      </GROUP>
       <FILE id="XV2Tnw" name="BlueSlider.cpp" compile="1" resource="0" file="Source/UI/BlueSlider.cpp"/>
       <FILE id="htoFH7" name="BlueSlider.h" compile="0" resource="0" file="Source/UI/BlueSlider.h"/>
       <FILE id="Y6XOWr" name="GreenSlider.cpp" compile="1" resource="0" file="Source/UI/GreenSlider.cpp"/>
@@ -40,6 +46,8 @@
       <FILE id="uhh7z8" name="State.h" compile="0" resource="0" file="Source/UI/State.h"/>
       <FILE id="cskGin" name="Toggle.cpp" compile="1" resource="0" file="Source/UI/Toggle.cpp"/>
       <FILE id="Xepkh9" name="Toggle.h" compile="0" resource="0" file="Source/UI/Toggle.h"/>
+      <FILE id="FpgtDi" name="Visualizer.cpp" compile="1" resource="0" file="Source/UI/Visualizer.cpp"/>
+      <FILE id="qd2Djq" name="Visualizer.h" compile="0" resource="0" file="Source/UI/Visualizer.h"/>
       <FILE id="sRkz2H" name="YellowSlider.cpp" compile="1" resource="0"
             file="Source/UI/YellowSlider.cpp"/>
       <FILE id="xCBuZb" name="YellowSlider.h" compile="0" resource="0" file="Source/UI/YellowSlider.h"/>

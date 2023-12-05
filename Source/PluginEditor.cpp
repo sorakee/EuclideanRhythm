@@ -12,15 +12,33 @@
 //==============================================================================
 EuclideanRhythmAudioProcessorEditor::EuclideanRhythmAudioProcessorEditor (EuclideanRhythmAudioProcessor& p, 
     juce::AudioProcessorValueTreeState& apvts)
-    : AudioProcessorEditor (&p), audioProcessor (p), apvts (apvts), knobs (apvts)
+    : AudioProcessorEditor (&p), 
+    audioProcessor (p), 
+    apvts (apvts), 
+    knobs (apvts),
+    visualizer (apvts)
 {
     // Placeholder
     placeholder.setColour(juce::TextButton::buttonColourId,
         juce::Colours::cornflowerblue);
     placeholder.setButtonText("PLACEHOLDER");
-    addAndMakeVisible(placeholder);
 
+    addAndMakeVisible(placeholder);
+    addAndMakeVisible(visualizer);
     addAndMakeVisible(knobs);
+
+    std::vector<juce::Slider*> slider1 = knobs.getSliders(0);
+    slider1[0]->onDragEnd = [this, slider1]
+        {
+            visualizer.setNumEllipses(static_cast<int>(slider1[0]->getValue()),
+                                      static_cast<int>(slider1[1]->getValue()));
+        };
+
+    slider1[1]->onDragEnd = [this, slider1]
+        {
+            visualizer.setNumEllipses(static_cast<int>(slider1[0]->getValue()),
+                static_cast<int>(slider1[1]->getValue()));
+        };
 
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
@@ -50,12 +68,6 @@ void EuclideanRhythmAudioProcessorEditor::paint (juce::Graphics& g)
 {
     // (Our component is opaque, so we must completely fill the background with a solid colour)
     g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
-
-    auto area = getLocalBounds();
-    // Assign the left half of main area a space for the visualizer
-    auto visualizerArea = area.removeFromLeft(area.getWidth() * 0.5);
-    g.setColour(juce::Colour(0.f, 0.f, 13.f / 255.f, 1.f));
-    g.fillRect(visualizerArea);
 }
 
 void EuclideanRhythmAudioProcessorEditor::resized()
@@ -64,8 +76,11 @@ void EuclideanRhythmAudioProcessorEditor::resized()
     // subcomponents in your editor..
     auto area = getLocalBounds();
 
-    // Reserve right half of the main area for control Area
+    // Reserve right half of the main area for control area
     auto controlArea = area.removeFromRight(area.getWidth() * 0.5);
+
+    // Reserve left half of the main area for visualizer area
+    visualizer.setBounds(area);
 
     // Reserve upper control area for knobs
     knobs.setBounds(controlArea.removeFromTop(controlArea.getHeight() * 0.8));
