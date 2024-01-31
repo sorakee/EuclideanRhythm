@@ -56,7 +56,7 @@ private:
 	void initLimit();
 	void attachSliders (juce::AudioProcessorValueTreeState& apvts, int compNum);
 	void toggleSliders();
-	void changeLimit(juce::AudioProcessorValueTreeState& apvts);
+	void changeLimit();
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Knobs)
 };

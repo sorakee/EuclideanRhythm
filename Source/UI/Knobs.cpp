@@ -25,7 +25,7 @@ Knobs::Knobs(juce::AudioProcessorValueTreeState& apvts)
     toggleSliders();
 
     // Ensure beat and offset values does not exceed step value
-    changeLimit(apvts);
+    changeLimit();
 }
 
 Knobs::~Knobs()
@@ -455,11 +455,11 @@ void Knobs::toggleSliders()
         };
 }
 
-void Knobs::changeLimit(juce::AudioProcessorValueTreeState& apvts)
+void Knobs::changeLimit()
 {
     // TODO
 
-    stepSlider1.onValueChange = [this, &apvts]() 
+    stepSlider1.onValueChange = [this]() 
         {
             if (beatSlider1.getValue() > stepSlider1.getValue())
             {
@@ -475,8 +475,6 @@ void Knobs::changeLimit(juce::AudioProcessorValueTreeState& apvts)
             auto sliderRange = offsetSlider1.getRange();
             beatSlider1.setRange(0, stepSlider1.getValue(), 1);
             offsetSlider1.setRange(0, stepSlider1.getValue(), 1);
-
-            juce::Logger::writeToLog("Slider Value : " + juce::String(beatSlider1.getValue()));
 
             beatSlider1.repaint();
             offsetSlider1.repaint();

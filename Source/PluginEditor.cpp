@@ -27,6 +27,11 @@ EuclideanRhythmAudioProcessorEditor::EuclideanRhythmAudioProcessorEditor (Euclid
     addAndMakeVisible(visualizer);
     addAndMakeVisible(knobs);
 
+    /*
+    * slider1[0] - Steps Slider
+    * slider1[1] - Beats Slider
+    * slider1[2] - Offset Slider
+    */
     std::vector<juce::Slider*> slider1 = knobs.getSliders(0);
     slider1[0]->onDragEnd = [this, slider1]
         {

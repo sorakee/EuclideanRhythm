@@ -20,6 +20,7 @@ EuclideanRhythmAudioProcessor::EuclideanRhythmAudioProcessor()
                        .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
                      #endif
                        ), apvts (*this, nullptr, "PARAMETERS", createParameterLayout())
+                        , currentSampleRate (0.0), currentAngleL (0.0), currentAngleR (0.0), angleDelta(0.0), euclideanPattern (64), sampleCount(0), isSilent(false)
 #endif
 {
 }
@@ -95,6 +96,11 @@ void EuclideanRhythmAudioProcessor::prepareToPlay (double sampleRate, int sample
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
+    currentSampleRate = sampleRate;
+    updateAngleDelta();
+    std::vector<bool> euclideanPattern = calculateEuclideanRhythm(
+        apvts.getRawParameterValue("Steps 1")->load(),
+        apvts.getRawParameterValue("Beats 1")->load());
 }
 
 void EuclideanRhythmAudioProcessor::releaseResources()
@@ -143,6 +149,13 @@ void EuclideanRhythmAudioProcessor::processBlock (juce::AudioBuffer<float>& buff
     // this code if your algorithm always overwrites all the output channels.
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
+    
+    int currentStep = 0;
+    float elapsedTime = 0.0f;
+    float interval = 0.005f;
+    std::vector<bool> euclideanPattern = calculateEuclideanRhythm(
+        apvts.getRawParameterValue("Steps 1")->load(),
+        apvts.getRawParameterValue("Beats 1")->load());
 
     // This is the place where you'd normally do the guts of your plugin's
     // audio processing...
@@ -154,7 +167,41 @@ void EuclideanRhythmAudioProcessor::processBlock (juce::AudioBuffer<float>& buff
     {
         auto* channelData = buffer.getWritePointer (channel);
 
-        // ..do something to the data...
+        for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
+        {
+            if (channel == 0)
+            {
+                float currentSample = std::sin(currentAngleL);
+                currentAngleL += angleDelta;
+
+                currentAngleL = (currentAngleL >= juce::MathConstants<float>::twoPi) ?
+                    currentAngleL - juce::MathConstants<float>::twoPi : currentAngleL;
+
+                // Output sound wave to the left channel buffer
+                channelData[sample] = isSilent ? 0.0f : (0.125f * currentSample);
+            }
+            else if (channel == 1)
+            {
+                float currentSample = std::sin(currentAngleR);
+                currentAngleR += angleDelta;
+
+                currentAngleR = (currentAngleR >= juce::MathConstants<float>::twoPi) ?
+                    currentAngleR - juce::MathConstants<float>::twoPi : currentAngleR;
+
+                // Output sound wave to the right channel buffer
+                channelData[sample] = isSilent ? 0.0f : (0.125f * currentSample);
+            }
+        }
+
+        // Count total number of samples
+        sampleCount += buffer.getNumSamples();
+
+        // Sampling rate (samples/sec) divided by beats/sec to get samples/beat
+        if (sampleCount >= (int)currentSampleRate / 2)
+        {
+            sampleCount = 0;
+            isSilent = !isSilent;
+        }
     }
 }
 
@@ -207,20 +254,72 @@ juce::AudioProcessorValueTreeState::ParameterLayout
     return layout;
 }
 
-int EuclideanRhythmAudioProcessor::gcd(int steps, int beats)
+std::vector<bool> EuclideanRhythmAudioProcessor::calculateEuclideanRhythm(int steps, int beats)
 {
-    int temp = 0;
-    while (beats != 0)
+    // Buffer Size
+    const int bufferSize = 48;
+
+    // Initialize euclidean rhythm pattern
+    std::vector<bool> pattern(bufferSize, false);
+
+    // Each iteration is a process of pairing strings X and Y and the remainder from the pairings
+    // X will hold the "dominant" pair (the pair that there are more of)
+    std::string x = "1";
+    int x_amount = beats;
+
+    std::string y = "0";
+    int y_amount = steps - beats;
+
+    // iterate as long as the non dominant pair can be paired 
+    // (if there is 1 Y left, all we can do is pair it with however many Xs are left, so we're done)
+    while (x_amount > 1 && y_amount > 1)
     {
-        temp = beats;
-        beats = steps % beats;
-        // Stores remainder values
-        remainders.push_back(beats);
-        steps = temp;
+        // Placeholder variables
+        int x_temp = x_amount;
+        int y_temp = y_amount;
+        std::string y_copy = y;
+
+        // Check which is the dominant pair 
+        if (x_temp >= y_temp)
+        {
+            // Set the new number of pairs for X and Y
+            x_amount = y_temp;
+            y_amount = x_temp - y_temp;
+
+            // The previous dominant pair becomes the new non dominant pair
+            y = x;
+        }
+        else
+        {
+            x_amount = x_temp;
+            y_amount = y_temp - x_temp;
+        }
+
+        // Create the new dominant pair by combining the previous pairs
+        x = x + y_copy;
     }
 
-    // GCD between 'steps' and 'beats'
-    return steps;
+    // By this point, we have strings X and Y formed through a series of pairings of the initial strings "1" and "0"
+    // X is the final dominant pair and Y is the second to last dominant pair
+    std::string rhythm;
+    for (int i = 1; i <= x_amount; i++)
+        rhythm += x;
+    for (int i = 1; i <= y_amount; i++)
+        rhythm += y;
+
+    // Set beat status based on Euclidean rhythm
+    for (int i = 0; i < rhythm.length(); ++i)
+    {
+        pattern[i] = (rhythm[i] == '1') ? true : false;
+    }
+
+    return pattern;
+}
+
+void EuclideanRhythmAudioProcessor::updateAngleDelta()
+{
+    const float frequency = 440.0f; // A4
+    angleDelta = 2.0f * juce::MathConstants<double>::pi * (frequency / currentSampleRate);
 }
 
 //==============================================================================

@@ -21,6 +21,8 @@ public:
     void paint(juce::Graphics&) override;
     void timerCallback() override;
 
+    void setAngle(float newAngle);
+
 private:
     float angle;
     juce::int64 startTime;

@@ -59,12 +59,18 @@ public:
     //==============================================================================
 
 private:
-    std::vector<int> remainders;
     juce::AudioProcessorValueTreeState::ParameterLayout 
         createParameterLayout();
     juce::AudioProcessorValueTreeState apvts;
+    void updateAngleDelta();
     // Euclidean Algorithm
-    int gcd (int steps, int beats);
+    std::vector<bool> calculateEuclideanRhythm (int steps, int beats);
+    std::vector<bool> pattern1, pattern2, pattern3, pattern4;
+
+    std::vector<bool> euclideanPattern;
+    double currentSampleRate, currentAngleL, currentAngleR, angleDelta;
+    int sampleCount;
+    bool isSilent;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EuclideanRhythmAudioProcessor)

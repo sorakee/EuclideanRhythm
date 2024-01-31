@@ -22,7 +22,8 @@ Visualizer::~Visualizer()
 
 void Visualizer::paint(juce::Graphics& g)
 {
-    g.fillAll(juce::Colours::darkgrey);
+    // Visualizer background colour
+    g.fillAll(juce::Colours::black);
 
     juce::Rectangle<float> bounds = getLocalBounds().toFloat();
     juce::Point<float> center = bounds.getCentre();
@@ -33,9 +34,6 @@ void Visualizer::paint(juce::Graphics& g)
     circlePath.addEllipse(center.getX() - radius, center.getY() - radius, 2 * radius, 2 * radius);
     g.setColour(juce::Colours::white);
     g.strokePath(circlePath, juce::PathStrokeType(2.5f));
-
-    // Draw ellipses
-    g.setColour(juce::Colours::green);
 }
 
 void Visualizer::resized()
@@ -96,7 +94,7 @@ void Visualizer::calculateEuclideanRhythm(int steps, int beats)
     // (if there is 1 Y left, all we can do is pair it with however many Xs are left, so we're done)
     while (x_amount > 1 && y_amount > 1)
     {
-        //Placeholder variables
+        // Placeholder variables
         int x_temp = x_amount;
         int y_temp = y_amount;
         std::string y_copy = y;
@@ -143,6 +141,7 @@ void Visualizer::setNumEllipses(int newNumEllipses, int newBeats)
     {
         numEllipses = newNumEllipses;
         numBeats = newBeats;
+        needle.setAngle(-juce::MathConstants<float>::halfPi);
         createEllipses();
         calculateEuclideanRhythm(numEllipses, numBeats);
         repaint();

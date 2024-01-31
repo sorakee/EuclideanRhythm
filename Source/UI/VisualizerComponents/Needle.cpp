@@ -22,7 +22,7 @@ void Needle::paint(juce::Graphics& g)
     juce::Point<float> center = bounds.getCentre();
     float length = juce::jmin(bounds.getWidth(), bounds.getHeight()) * 0.4f;
 
-    g.setColour(juce::Colours::red);
+    g.setColour(juce::Colours::indianred);
     g.drawLine(center.getX(), center.getY(),
                center.getX() + std::cos(angle) * length,
                center.getY() + std::sin(angle) * length, 5.0f);
@@ -48,6 +48,13 @@ void Needle::timerCallback()
         angle -= juce::MathConstants<float>::twoPi;
     }
 
+    // TODO: Reset needle to default position and stop timer if this pattern is terminated
+
     // Trigger a repaint
     repaint();
+}
+
+void Needle::setAngle(float newAngle)
+{
+    angle = newAngle;
 }
