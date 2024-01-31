@@ -12,8 +12,11 @@
 
 Needle::Needle() : angle(-juce::MathConstants<float>::halfPi)
 {
-    startTime = juce::Time::currentTimeMillis();
-    startTimerHz(60);
+}
+
+Needle::~Needle()
+{
+    stopTimer();
 }
 
 void Needle::paint(juce::Graphics& g)
@@ -26,35 +29,53 @@ void Needle::paint(juce::Graphics& g)
     g.drawLine(center.getX(), center.getY(),
                center.getX() + std::cos(angle) * length,
                center.getY() + std::sin(angle) * length, 5.0f);
+
 }
 
-void Needle::timerCallback()
+void Needle::hiResTimerCallback()
 {
     // Update the angle
-    angle += juce::MathConstants<float>::twoPi / (120.0f);
+    angle += juce::MathConstants<float>::twoPi / (16.0f);
 
     // Ensure the angle stays within the range [0, 2*pi)
-    if (angle >= juce::MathConstants<float>::twoPi)
+    if (angle >= 3.0f * juce::MathConstants<float>::halfPi)
     {
         juce::int64 endTime = juce::Time::currentTimeMillis();
         juce::int64 timeTaken = endTime - startTime;
 
+        float calc = (180.0f / juce::MathConstants<float>::twoPi) * angle;
+        DBG("Angle: " + juce::String(calc));
         DBG("Start Time: " + juce::String(startTime));
         DBG("End Time: " + juce::String(endTime));
         DBG("Time taken: " + juce::String(timeTaken));
 
         startTime = endTime;
 
-        angle -= juce::MathConstants<float>::twoPi;
+        angle = -juce::MathConstants<float>::halfPi;
     }
 
     // TODO: Reset needle to default position and stop timer if this pattern is terminated
 
     // Trigger a repaint
-    repaint();
+    const juce::MessageManagerLock myLock;
+    this->repaint();
 }
 
 void Needle::setAngle(float newAngle)
 {
     angle = newAngle;
+}
+
+void Needle::startNeedle()
+{
+    // Time = 1 / frequency (Hz), 60 Hz
+    startTimer(1000);
+    startTime = juce::Time::currentTimeMillis();
+}
+
+void Needle::stopNeedle()
+{
+    stopTimer();
+    angle = -juce::MathConstants<float>::halfPi;
+    this->repaint();
 }

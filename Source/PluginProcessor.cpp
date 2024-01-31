@@ -238,6 +238,8 @@ juce::AudioProcessorValueTreeState::ParameterLayout
     juce::AudioProcessorValueTreeState::ParameterLayout layout;
 
     const int noOfComps = 4;
+    const std::vector<juce::String> colours{"Red", "Green", "Blue", "Yellow"};
+
     for (int i = 0; i < noOfComps; ++i)
     {
         auto stepsParam = juce::String(std::string("Steps ") + std::to_string(i + 1));
@@ -246,6 +248,12 @@ juce::AudioProcessorValueTreeState::ParameterLayout
         layout.add(std::make_unique<juce::AudioParameterInt>(stepsParam, stepsParam, 1, 48, 16));
         layout.add(std::make_unique<juce::AudioParameterInt>(beatsParam, beatsParam, 0, 48, 16));
         layout.add(std::make_unique<juce::AudioParameterInt>(offsetParam, offsetParam, 0, 48, 0));
+    }
+
+    for (juce::String c : colours)
+    {
+        auto toggleParam = juce::String(juce::String("Toggle ") + c);
+        layout.add(std::make_unique<juce::AudioParameterBool>(toggleParam, toggleParam, false));
     }
 
     // TODO (OPTIONAL) : Add velocity/speed parameter to manipulate 

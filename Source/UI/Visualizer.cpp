@@ -141,9 +141,15 @@ void Visualizer::setNumEllipses(int newNumEllipses, int newBeats)
     {
         numEllipses = newNumEllipses;
         numBeats = newBeats;
+        // Reset needle when steps or beats change
         needle.setAngle(-juce::MathConstants<float>::halfPi);
         createEllipses();
         calculateEuclideanRhythm(numEllipses, numBeats);
         repaint();
     }
+}
+
+Needle* Visualizer::getNeedle()
+{
+    return &needle;
 }

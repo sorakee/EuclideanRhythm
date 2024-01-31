@@ -309,13 +309,18 @@ void Knobs::attachSliders(juce::AudioProcessorValueTreeState& apvts, int compNum
 {
     for (int i = 0; i < compNum; ++i)
     {
+        const std::vector<juce::String> colours{ "Red", "Green", "Blue", "Yellow" };
+
         auto stepsParam = juce::String(std::string("Steps ") + std::to_string(i + 1));
         auto beatsParam = juce::String(std::string("Beats ") + std::to_string(i + 1));
         auto offsetParam = juce::String(std::string("Offset ") + std::to_string(i + 1));
+        auto toggleParam = juce::String(juce::String("Toggle ") + colours[i]);
 
         switch (i + 1)
         {
         case 1:
+            toggleAttach1 = std::make_unique<ButtonAttachment>(apvts, toggleParam, toggleRed);
+
             stepLabel1.attachToComponent(&stepSlider1, false);
             stepLabel1.setText("Steps", juce::dontSendNotification);
             stepLabel1.setJustificationType(juce::Justification::centredTop);
@@ -336,6 +341,8 @@ void Knobs::attachSliders(juce::AudioProcessorValueTreeState& apvts, int compNum
 
             break;
         case 2:
+            toggleAttach2 = std::make_unique<ButtonAttachment>(apvts, toggleParam, toggleGreen);
+
             stepLabel2.attachToComponent(&stepSlider2, false);
             stepLabel2.setText("Steps", juce::dontSendNotification);
             stepLabel2.setJustificationType(juce::Justification::centredTop);
@@ -355,6 +362,8 @@ void Knobs::attachSliders(juce::AudioProcessorValueTreeState& apvts, int compNum
             offsetAttach2 = std::make_unique<SliderAttachment>(apvts, offsetParam, offsetSlider2);
             break;
         case 3:
+            toggleAttach3 = std::make_unique<ButtonAttachment>(apvts, toggleParam, toggleBlue);
+
             stepLabel3.attachToComponent(&stepSlider3, false);
             stepLabel3.setText("Steps", juce::dontSendNotification);
             stepLabel3.setJustificationType(juce::Justification::centredTop);
@@ -374,6 +383,8 @@ void Knobs::attachSliders(juce::AudioProcessorValueTreeState& apvts, int compNum
             offsetAttach3 = std::make_unique<SliderAttachment>(apvts, offsetParam, offsetSlider3);
             break;
         case 4:
+            toggleAttach4 = std::make_unique<ButtonAttachment>(apvts, toggleParam, toggleYellow);
+
             stepLabel4.attachToComponent(&stepSlider4, false);
             stepLabel4.setText("Steps", juce::dontSendNotification);
             stepLabel4.setJustificationType(juce::Justification::centredTop);

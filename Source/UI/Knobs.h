@@ -29,6 +29,7 @@ public:
 private:
 
 	using SliderAttachment = juce::AudioProcessorValueTreeState::SliderAttachment;
+	using ButtonAttachment = juce::AudioProcessorValueTreeState::ButtonAttachment;
 
 	// Red Knobs
 	RedSlider stepSlider1, beatSlider1, offsetSlider1;
@@ -49,6 +50,7 @@ private:
 	std::unique_ptr<SliderAttachment> stepAttach2, beatAttach2, offsetAttach2;
 	std::unique_ptr<SliderAttachment> stepAttach3, beatAttach3, offsetAttach3;
 	std::unique_ptr<SliderAttachment> stepAttach4, beatAttach4, offsetAttach4;
+	std::unique_ptr<ButtonAttachment> toggleAttach1, toggleAttach2, toggleAttach3, toggleAttach4;
 
 	std::vector<juce::Component*> getComponents(int compNum);
 	

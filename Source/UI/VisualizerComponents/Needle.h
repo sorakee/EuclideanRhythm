@@ -13,15 +13,18 @@
 #include <JuceHeader.h>
 
 class Needle : public juce::Component,
-               private juce::Timer
+               private juce::HighResolutionTimer
 {
 public:
     Needle();
+    ~Needle();
 
     void paint(juce::Graphics&) override;
-    void timerCallback() override;
+    void hiResTimerCallback() override;
 
     void setAngle(float newAngle);
+    void startNeedle();
+    void stopNeedle();
 
 private:
     float angle;

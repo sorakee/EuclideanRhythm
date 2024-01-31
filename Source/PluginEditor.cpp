@@ -27,6 +27,8 @@ EuclideanRhythmAudioProcessorEditor::EuclideanRhythmAudioProcessorEditor (Euclid
     addAndMakeVisible(visualizer);
     addAndMakeVisible(knobs);
 
+    // TODO : Move all lambda functions in all UI classes here?
+
     /*
     * slider1[0] - Steps Slider
     * slider1[1] - Beats Slider
@@ -43,6 +45,20 @@ EuclideanRhythmAudioProcessorEditor::EuclideanRhythmAudioProcessorEditor (Euclid
         {
             visualizer.setNumEllipses(static_cast<int>(slider1[0]->getValue()),
                 static_cast<int>(slider1[1]->getValue()));
+        };
+
+    // ToggleRed
+    std::vector<juce::ShapeButton*> button1 = knobs.getToggles();
+    button1[0]->onClick = [this, button1]
+        {
+            if (button1[0]->getToggleState())
+            {
+                visualizer.getNeedle()->startNeedle();
+            } 
+            else
+            {
+                visualizer.getNeedle()->stopNeedle();
+            }
         };
 
     // Make sure that before the constructor has finished, you've set the

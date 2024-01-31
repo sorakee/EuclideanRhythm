@@ -24,6 +24,7 @@ public:
 	void resized() override;
 
 	void setNumEllipses(int newNumEllipses, int newBeats);
+	Needle* getNeedle();
 
 private:
 	Needle needle;
