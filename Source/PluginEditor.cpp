@@ -37,23 +37,43 @@ EuclideanRhythmAudioProcessorEditor::EuclideanRhythmAudioProcessorEditor (Euclid
     std::vector<juce::Slider*> slider1 = knobs.getSliders(0);
     slider1[0]->onDragEnd = [this, slider1]
         {
+            if (slider1[1]->getValue() > slider1[0]->getValue())
+            {
+                slider1[1]->setValue(slider1[0]->getValue());
+            }
+
+            if (slider1[2]->getValue() > slider1[0]->getValue())
+            {
+                slider1[2]->setValue(slider1[0]->getValue());
+            }
+
+            auto beatRange = slider1[1]->getRange();
+            auto sliderRange = slider1[2]->getRange();
+            slider1[1]->setRange(0, slider1[0]->getValue(), 1);
+            slider1[2]->setRange(0, slider1[0]->getValue(), 1);
+
+            slider1[1]->repaint();
+            slider1[2]->repaint();
+
             visualizer.setNumEllipses(static_cast<int>(slider1[0]->getValue()),
-                                      static_cast<int>(slider1[1]->getValue()));
+                static_cast<int>(slider1[1]->getValue()));
+            visualizer.getNeedle()->setSteps(slider1[0]->getValue());
         };
 
     slider1[1]->onDragEnd = [this, slider1]
         {
             visualizer.setNumEllipses(static_cast<int>(slider1[0]->getValue()),
-                static_cast<int>(slider1[1]->getValue()));
+                                      static_cast<int>(slider1[1]->getValue()));
         };
 
     // ToggleRed
     std::vector<juce::ShapeButton*> button1 = knobs.getToggles();
-    button1[0]->onClick = [this, button1]
+    button1[0]->onClick = [this, button1, slider1, &p]
         {
             if (button1[0]->getToggleState())
             {
-                visualizer.getNeedle()->startNeedle();
+                visualizer.getNeedle()->setSteps(slider1[0]->getValue());
+                visualizer.getNeedle()->startNeedle(p.getInterval());
             } 
             else
             {

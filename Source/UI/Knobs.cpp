@@ -25,7 +25,7 @@ Knobs::Knobs(juce::AudioProcessorValueTreeState& apvts)
     toggleSliders();
 
     // Ensure beat and offset values does not exceed step value
-    changeLimit();
+    // changeLimit();
 }
 
 Knobs::~Knobs()

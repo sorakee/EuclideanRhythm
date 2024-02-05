@@ -22,12 +22,14 @@ public:
     void paint(juce::Graphics&) override;
     void hiResTimerCallback() override;
 
-    void setAngle(float newAngle);
-    void startNeedle();
+    void setAngle(float);
+    void setSteps(int);
+    void startNeedle(float);
     void stopNeedle();
 
 private:
-    float angle;
+    int steps;
+    float angle, samplesPerBeat;
     juce::int64 startTime;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Needle)

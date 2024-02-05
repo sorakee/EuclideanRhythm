@@ -20,9 +20,17 @@ EuclideanRhythmAudioProcessor::EuclideanRhythmAudioProcessor()
                        .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
                      #endif
                        ), apvts (*this, nullptr, "PARAMETERS", createParameterLayout())
-                        , currentSampleRate (0.0), currentAngleL (0.0), currentAngleR (0.0), angleDelta(0.0), euclideanPattern (64), sampleCount(0), isSilent(false)
+                        , currentSampleRate (0.0f),
+                          currentAngleL (0.0f),
+                          currentAngleR (0.0f),
+                          angleDelta(0.0f),
+                          euclideanPattern (64),
+                          sampleCount(0),
+                          patternTrack(0),
+                          isSilent(true)
 #endif
 {
+    BPS = 0.0f;
 }
 
 EuclideanRhythmAudioProcessor::~EuclideanRhythmAudioProcessor()
@@ -96,6 +104,7 @@ void EuclideanRhythmAudioProcessor::prepareToPlay (double sampleRate, int sample
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
+    
     currentSampleRate = sampleRate;
     updateAngleDelta();
     std::vector<bool> euclideanPattern = calculateEuclideanRhythm(
@@ -141,6 +150,14 @@ void EuclideanRhythmAudioProcessor::processBlock (juce::AudioBuffer<float>& buff
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
 
+    // Retrieve BPM information from host, else defaults to 120 BPM
+    juce::Optional<double> positionBPM = getPlayHead()->getPosition()->getBpm();
+    double currentBPM = (positionBPM.hasValue()) ? positionBPM.operator*() : 120.0;
+    double currentBPS = currentBPM / 60.0;
+    BPS = currentBPS;
+
+    bool isRedOn = ((int)apvts.getRawParameterValue("Toggle Red")->load() == 1) ? true : false;
+
     // In case we have more outputs than inputs, this code clears any output
     // channels that didn't contain input data, (because these aren't
     // guaranteed to be empty - they may contain garbage).
@@ -148,11 +165,8 @@ void EuclideanRhythmAudioProcessor::processBlock (juce::AudioBuffer<float>& buff
     // when they first compile a plugin, but obviously you don't need to keep
     // this code if your algorithm always overwrites all the output channels.
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
-        buffer.clear (i, 0, buffer.getNumSamples());
+        buffer.clear(i, 0, buffer.getNumSamples());
     
-    int currentStep = 0;
-    float elapsedTime = 0.0f;
-    float interval = 0.005f;
     std::vector<bool> euclideanPattern = calculateEuclideanRhythm(
         apvts.getRawParameterValue("Steps 1")->load(),
         apvts.getRawParameterValue("Beats 1")->load());
@@ -163,46 +177,50 @@ void EuclideanRhythmAudioProcessor::processBlock (juce::AudioBuffer<float>& buff
     // the samples and the outer loop is handling the channels.
     // Alternatively, you can process the samples with the channels
     // interleaved by keeping the same state.
-    for (int channel = 0; channel < totalNumInputChannels; ++channel)
+    // Count total number of samples
+
+    auto* leftChannel = buffer.getWritePointer(0);
+    auto* rightChannel = buffer.getWritePointer(1);
+
+    for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
     {
-        auto* channelData = buffer.getWritePointer (channel);
+        float currentSample = calculateSample(currentAngleL, angleDelta);
 
-        for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
+        // Output sound wave to the left channel buffer
+        leftChannel[sample] = (isSilent || !isRedOn) ? 0.0f : (0.125f * currentSample);
+        rightChannel[sample] = (isSilent || !isRedOn) ? 0.0f : (0.125f * currentSample);
+    }
+
+    sampleCount += buffer.getNumSamples();
+
+    // Sampling rate (samples/sec) divided by BPS (beats/sec) to get samples/beat
+    if ((sampleCount * 2 >= (int)currentSampleRate / currentBPS) && isRedOn)
+    {
+        currentAngleL = 0.0f;
+        sampleCount = 0;
+        isSilent = !isSilent;
+        patternTrack++;
+
+        if (patternTrack + 1 >= apvts.getRawParameterValue("Steps 1")->load())
         {
-            if (channel == 0)
-            {
-                float currentSample = std::sin(currentAngleL);
-                currentAngleL += angleDelta;
-
-                currentAngleL = (currentAngleL >= juce::MathConstants<float>::twoPi) ?
-                    currentAngleL - juce::MathConstants<float>::twoPi : currentAngleL;
-
-                // Output sound wave to the left channel buffer
-                channelData[sample] = isSilent ? 0.0f : (0.125f * currentSample);
-            }
-            else if (channel == 1)
-            {
-                float currentSample = std::sin(currentAngleR);
-                currentAngleR += angleDelta;
-
-                currentAngleR = (currentAngleR >= juce::MathConstants<float>::twoPi) ?
-                    currentAngleR - juce::MathConstants<float>::twoPi : currentAngleR;
-
-                // Output sound wave to the right channel buffer
-                channelData[sample] = isSilent ? 0.0f : (0.125f * currentSample);
-            }
-        }
-
-        // Count total number of samples
-        sampleCount += buffer.getNumSamples();
-
-        // Sampling rate (samples/sec) divided by beats/sec to get samples/beat
-        if (sampleCount >= (int)currentSampleRate / 2)
-        {
-            sampleCount = 0;
-            isSilent = !isSilent;
+            patternTrack = 0;
         }
     }
+
+    if (!isRedOn)
+    {
+        patternTrack = 0;
+    }
+}
+
+float EuclideanRhythmAudioProcessor::calculateSample(float &currentAngle, float &angleDelta)
+{
+    float currentSample = std::sin(currentAngle);
+    currentAngle += angleDelta;
+    currentAngle = (currentAngle >= juce::MathConstants<float>::twoPi) ?
+        currentAngle - juce::MathConstants<float>::twoPi : currentAngle;
+
+    return currentSample;
 }
 
 //==============================================================================
@@ -327,7 +345,13 @@ std::vector<bool> EuclideanRhythmAudioProcessor::calculateEuclideanRhythm(int st
 void EuclideanRhythmAudioProcessor::updateAngleDelta()
 {
     const float frequency = 440.0f; // A4
-    angleDelta = 2.0f * juce::MathConstants<double>::pi * (frequency / currentSampleRate);
+    angleDelta = juce::MathConstants<float>::twoPi * (frequency / currentSampleRate);
+}
+
+float EuclideanRhythmAudioProcessor::getInterval()
+{
+    float interval = 1.0f / BPS;
+    return interval;
 }
 
 //==============================================================================

@@ -57,19 +57,25 @@ public:
     void setStateInformation (const void* data, int sizeInBytes) override;
 
     //==============================================================================
+    float getInterval();
 
 private:
     juce::AudioProcessorValueTreeState::ParameterLayout 
         createParameterLayout();
     juce::AudioProcessorValueTreeState apvts;
+    juce::AudioPlayHead* playHead;
+
     void updateAngleDelta();
+    float calculateSample(float &currentAngle, float &angleDelta);
+
     // Euclidean Algorithm
     std::vector<bool> calculateEuclideanRhythm (int steps, int beats);
     std::vector<bool> pattern1, pattern2, pattern3, pattern4;
 
     std::vector<bool> euclideanPattern;
-    double currentSampleRate, currentAngleL, currentAngleR, angleDelta;
+    float currentSampleRate, currentAngleL, currentAngleR, angleDelta, BPS;
     int sampleCount;
+    int patternTrack;
     bool isSilent;
 
     //==============================================================================

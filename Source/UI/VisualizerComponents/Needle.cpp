@@ -12,6 +12,9 @@
 
 Needle::Needle() : angle(-juce::MathConstants<float>::halfPi)
 {
+    startTime = juce::Time::currentTimeMillis();
+    samplesPerBeat = 0.0f;
+    steps = 16;
 }
 
 Needle::~Needle()
@@ -35,7 +38,7 @@ void Needle::paint(juce::Graphics& g)
 void Needle::hiResTimerCallback()
 {
     // Update the angle
-    angle += juce::MathConstants<float>::twoPi / (16.0f);
+    angle += juce::MathConstants<float>::twoPi / steps;
 
     // Ensure the angle stays within the range [0, 2*pi)
     if (angle >= 3.0f * juce::MathConstants<float>::halfPi)
@@ -54,8 +57,6 @@ void Needle::hiResTimerCallback()
         angle = -juce::MathConstants<float>::halfPi;
     }
 
-    // TODO: Reset needle to default position and stop timer if this pattern is terminated
-
     // Trigger a repaint
     const juce::MessageManagerLock myLock;
     this->repaint();
@@ -66,10 +67,14 @@ void Needle::setAngle(float newAngle)
     angle = newAngle;
 }
 
-void Needle::startNeedle()
+void Needle::setSteps(int newSteps)
 {
-    // Time = 1 / frequency (Hz), 60 Hz
-    startTimer(1000);
+    steps = newSteps;
+}
+
+void Needle::startNeedle(float interval)
+{
+    startTimer(juce::roundToInt(interval * 1000));
     startTime = juce::Time::currentTimeMillis();
 }
 
