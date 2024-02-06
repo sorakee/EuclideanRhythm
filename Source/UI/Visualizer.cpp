@@ -27,6 +27,8 @@ void Visualizer::paint(juce::Graphics& g)
 
     juce::Rectangle<float> bounds = getLocalBounds().toFloat();
     juce::Point<float> center = bounds.getCentre();
+
+    // Radius of main circle
     float radius = juce::jmin(bounds.getWidth(), bounds.getHeight()) * 0.4f;
 
     // Draw the main circle
@@ -51,6 +53,8 @@ void Visualizer::createEllipses()
 {
     juce::Rectangle<float> bounds = getLocalBounds().toFloat();
     juce::Point<float> center = bounds.getCentre();
+
+    // Radius of main circle
     float radius = juce::jmin(bounds.getWidth(), bounds.getHeight()) * 0.4f;
 
     ellipses.clear();

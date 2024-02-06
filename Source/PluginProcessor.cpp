@@ -27,7 +27,8 @@ EuclideanRhythmAudioProcessor::EuclideanRhythmAudioProcessor()
                           euclideanPattern (64),
                           patternTrack(0),
                           duration(0.0f),
-                          isSilent(true)
+                          sampleCount(0),
+                          isSilent(false)
 #endif
 {
     BPS = 0.0f;
@@ -110,6 +111,7 @@ void EuclideanRhythmAudioProcessor::prepareToPlay (double sampleRate, int sample
     std::vector<bool> euclideanPattern = calculateEuclideanRhythm(
         apvts.getRawParameterValue("Steps 1")->load(),
         apvts.getRawParameterValue("Beats 1")->load());
+    currentAngle.resize(getTotalNumInputChannels(), 0.0f);
 }
 
 void EuclideanRhythmAudioProcessor::releaseResources()
@@ -155,7 +157,6 @@ void EuclideanRhythmAudioProcessor::processBlock (juce::AudioBuffer<float>& buff
     double currentBPM = (positionBPM.hasValue()) ? positionBPM.operator*() : 120.0;
     double currentBPS = currentBPM / 60.0;
     BPS = currentBPS;
-    float interval = 1.0f / currentBPS;
 
     bool isRedOn = ((int)apvts.getRawParameterValue("Toggle Red")->load() == 1) ? true : false;
 
@@ -180,57 +181,57 @@ void EuclideanRhythmAudioProcessor::processBlock (juce::AudioBuffer<float>& buff
     // interleaved by keeping the same state.
     // Count total number of samples
 
-    /*
     for (int channel = 0; channel < totalNumInputChannels; ++channel)
     {
         auto* channelData = buffer.getWritePointer(channel);
 
         for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
         {
-            if (channel == 0)
-            {
-                float currentSample = calculateSample(currentAngleL, angleDelta);
+            float currentSample = calculateSample(currentAngle[channel], angleDelta);
 
-                // Output sound wave to the left channel buffer
-                channelData[sample] = (isSilent || !isRedOn) ? 0.0f : (0.125f * currentSample);
-            }
-            else if (channel == 1)
-            {
-                float currentSample = calculateSample(currentAngleR, angleDelta);
-
-                // Output sound wave to the left channel buffer
-                channelData[sample] = (isSilent || !isRedOn) ? 0.0f : (0.125f * currentSample);
-            }
+            // Output sound wave to the left channel buffer
+            channelData[sample] = (isSilent || !isRedOn) ? 0.0f : (0.125f * currentSample);
         }
 
         // Get duration to compare with desired interval
-        duration += buffer.getNumSamples() / currentSampleRate;
-
-        if ((duration >= interval) && isRedOn && euclideanPattern[patternTrack])
+        sampleCount += buffer.getNumSamples();
+        
+        
+        if (sampleCount >= (int) (currentSampleRate / currentBPS) && isRedOn)
         {
-            DBG("got");
-            currentAngleL = 0.0f;
-            currentAngleR = 0.0f;
-            isSilent = !isSilent;
-            duration = 0;
+            std::fill(currentAngle.begin(), currentAngle.end(), 0.0f);
+            sampleCount = 0;
 
-            if (patternTrack + 1 >= apvts.getRawParameterValue("Steps 1")->load())
+            if (euclideanPattern[patternTrack])
+            {
+                isSilent = !isSilent;
+            }
+            else
+            {
+                isSilent = true;
+            }
+
+            patternTrack += (channel == 1) ? 1 : 0;
+
+            if (patternTrack >= apvts.getRawParameterValue("Steps 1")->load())
             {
                 patternTrack = 0;
             }
+
+            DBG(patternTrack);
         }
 
         if (!isRedOn)
         {
             patternTrack = 0;
-            currentAngleL = 0.0f;
-            currentAngleR = 0.0f;
-            isSilent = true;
+            sampleCount = 0;
+            std::fill(currentAngle.begin(), currentAngle.end(), 0.0f);
+            isSilent = false;
             buffer.clear();
         }
     }
-    */
 
+    /* ALTERNATIVE METHOD
     auto* leftChannel = buffer.getWritePointer(0);
     auto* rightChannel = buffer.getWritePointer(1);
 
@@ -246,18 +247,30 @@ void EuclideanRhythmAudioProcessor::processBlock (juce::AudioBuffer<float>& buff
     // Get duration to compare with desired interval
     duration += (buffer.getNumSamples() * 2) / currentSampleRate;
 
-    if ((duration >= interval) && isRedOn && euclideanPattern[patternTrack])
+    if ((duration >= interval) && isRedOn)
     {
         currentAngleL = 0.0f;
-        isSilent = !isSilent;
         duration = 0;
-        patternTrack += (patternTrack % 2 == 0) ? 1 : 0;
-        DBG(patternTrack);
 
-        if (patternTrack + 1 >= apvts.getRawParameterValue("Steps 1")->load())
+        // CHECK THIS
+        if (euclideanPattern[patternTrack])
+        {
+            // Stop counting when silent
+            isSilent = !isSilent;
+        } 
+        else 
+        {
+            isSilent = true;
+        }
+
+        patternTrack += (isSilent) ? 1 : 0;
+
+        if (patternTrack >= apvts.getRawParameterValue("Steps 1")->load())
         {
             patternTrack = 0;
         }
+
+        DBG(patternTrack);
     }
 
     if (!isRedOn)
@@ -267,6 +280,7 @@ void EuclideanRhythmAudioProcessor::processBlock (juce::AudioBuffer<float>& buff
         isSilent = true;
         buffer.clear();
     }
+    */
 }
 
 float EuclideanRhythmAudioProcessor::calculateSample(float &currentAngle, float &angleDelta)
