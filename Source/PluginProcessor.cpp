@@ -25,8 +25,8 @@ EuclideanRhythmAudioProcessor::EuclideanRhythmAudioProcessor()
                           currentAngleR (0.0f),
                           angleDelta(0.0f),
                           euclideanPattern (64),
-                          sampleCount(0),
                           patternTrack(0),
+                          duration(0.0f),
                           isSilent(true)
 #endif
 {
@@ -155,6 +155,7 @@ void EuclideanRhythmAudioProcessor::processBlock (juce::AudioBuffer<float>& buff
     double currentBPM = (positionBPM.hasValue()) ? positionBPM.operator*() : 120.0;
     double currentBPS = currentBPM / 60.0;
     BPS = currentBPS;
+    float interval = 1.0f / currentBPS;
 
     bool isRedOn = ((int)apvts.getRawParameterValue("Toggle Red")->load() == 1) ? true : false;
 
@@ -179,6 +180,57 @@ void EuclideanRhythmAudioProcessor::processBlock (juce::AudioBuffer<float>& buff
     // interleaved by keeping the same state.
     // Count total number of samples
 
+    /*
+    for (int channel = 0; channel < totalNumInputChannels; ++channel)
+    {
+        auto* channelData = buffer.getWritePointer(channel);
+
+        for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
+        {
+            if (channel == 0)
+            {
+                float currentSample = calculateSample(currentAngleL, angleDelta);
+
+                // Output sound wave to the left channel buffer
+                channelData[sample] = (isSilent || !isRedOn) ? 0.0f : (0.125f * currentSample);
+            }
+            else if (channel == 1)
+            {
+                float currentSample = calculateSample(currentAngleR, angleDelta);
+
+                // Output sound wave to the left channel buffer
+                channelData[sample] = (isSilent || !isRedOn) ? 0.0f : (0.125f * currentSample);
+            }
+        }
+
+        // Get duration to compare with desired interval
+        duration += buffer.getNumSamples() / currentSampleRate;
+
+        if ((duration >= interval) && isRedOn && euclideanPattern[patternTrack])
+        {
+            DBG("got");
+            currentAngleL = 0.0f;
+            currentAngleR = 0.0f;
+            isSilent = !isSilent;
+            duration = 0;
+
+            if (patternTrack + 1 >= apvts.getRawParameterValue("Steps 1")->load())
+            {
+                patternTrack = 0;
+            }
+        }
+
+        if (!isRedOn)
+        {
+            patternTrack = 0;
+            currentAngleL = 0.0f;
+            currentAngleR = 0.0f;
+            isSilent = true;
+            buffer.clear();
+        }
+    }
+    */
+
     auto* leftChannel = buffer.getWritePointer(0);
     auto* rightChannel = buffer.getWritePointer(1);
 
@@ -191,15 +243,16 @@ void EuclideanRhythmAudioProcessor::processBlock (juce::AudioBuffer<float>& buff
         rightChannel[sample] = (isSilent || !isRedOn) ? 0.0f : (0.125f * currentSample);
     }
 
-    sampleCount += buffer.getNumSamples();
+    // Get duration to compare with desired interval
+    duration += (buffer.getNumSamples() * 2) / currentSampleRate;
 
-    // Sampling rate (samples/sec) divided by BPS (beats/sec) to get samples/beat
-    if ((sampleCount * 2 >= (int)currentSampleRate / currentBPS) && isRedOn)
+    if ((duration >= interval) && isRedOn && euclideanPattern[patternTrack])
     {
         currentAngleL = 0.0f;
-        sampleCount = 0;
         isSilent = !isSilent;
-        patternTrack++;
+        duration = 0;
+        patternTrack += (patternTrack % 2 == 0) ? 1 : 0;
+        DBG(patternTrack);
 
         if (patternTrack + 1 >= apvts.getRawParameterValue("Steps 1")->load())
         {
@@ -210,6 +263,9 @@ void EuclideanRhythmAudioProcessor::processBlock (juce::AudioBuffer<float>& buff
     if (!isRedOn)
     {
         patternTrack = 0;
+        currentAngleL = 0.0f;
+        isSilent = true;
+        buffer.clear();
     }
 }
 
