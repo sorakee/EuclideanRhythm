@@ -74,9 +74,10 @@ private:
 
     std::vector<float> currentAngle;
     std::vector<bool> euclideanPattern;
+    std::vector<int> sampleCount;
 
     float currentSampleRate, currentAngleL, currentAngleR, angleDelta, BPS, duration;
-    int patternTrack, sampleCount;
+    int patternTrack, count;
     bool isSilent;
 
     //==============================================================================
