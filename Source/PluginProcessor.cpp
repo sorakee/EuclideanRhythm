@@ -286,7 +286,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout
         auto beatsParam = juce::String(std::string("Beats ") + std::to_string(i + 1));
         auto offsetParam = juce::String(std::string("Offset ") + std::to_string(i + 1));
         layout.add(std::make_unique<juce::AudioParameterInt>(stepsParam, stepsParam, 1, 48, 16));
-        layout.add(std::make_unique<juce::AudioParameterInt>(beatsParam, beatsParam, 0, 48, 9));
+        layout.add(std::make_unique<juce::AudioParameterInt>(beatsParam, beatsParam, 0, 48, 16));
         layout.add(std::make_unique<juce::AudioParameterInt>(offsetParam, offsetParam, 0, 48, 0));
     }
 
