@@ -58,6 +58,7 @@ public:
 
     //==============================================================================
     float getInterval();
+    void reset();
 
 private:
     juce::AudioProcessorValueTreeState::ParameterLayout 

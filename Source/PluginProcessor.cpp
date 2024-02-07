@@ -227,12 +227,17 @@ void EuclideanRhythmAudioProcessor::processBlock (juce::AudioBuffer<float>& buff
 
     if (!isRedOn)
     {
-        patternTrack = 0;
-        count = 0;
-        currentAngleL = 0.0f;
-        isSilent = true;
+        reset();
         buffer.clear();
     }
+}
+
+void EuclideanRhythmAudioProcessor::reset()
+{
+    patternTrack = 0;
+    count = 0;
+    currentAngleL = 0.0f;
+    isSilent = true;
 }
 
 float EuclideanRhythmAudioProcessor::calculateSample(float &currentAngle, float &angleDelta)

@@ -35,8 +35,10 @@ EuclideanRhythmAudioProcessorEditor::EuclideanRhythmAudioProcessorEditor (Euclid
     * slider1[2] - Offset Slider
     */
     std::vector<juce::Slider*> slider1 = knobs.getSliders(0);
-    slider1[0]->onDragEnd = [this, slider1]
+    slider1[0]->onDragEnd = [this, slider1, &p]
         {
+            p.reset();
+
             if (slider1[1]->getValue() > slider1[0]->getValue())
             {
                 slider1[1]->setValue(slider1[0]->getValue());
@@ -58,12 +60,16 @@ EuclideanRhythmAudioProcessorEditor::EuclideanRhythmAudioProcessorEditor (Euclid
             visualizer.setNumEllipses(static_cast<int>(slider1[0]->getValue()),
                 static_cast<int>(slider1[1]->getValue()));
             visualizer.getNeedle()->setSteps(slider1[0]->getValue());
+            visualizer.getNeedle()->startNeedle(p.getInterval());
         };
 
-    slider1[1]->onDragEnd = [this, slider1]
+    slider1[1]->onDragEnd = [this, slider1, &p]
         {
+            p.reset();
+
             visualizer.setNumEllipses(static_cast<int>(slider1[0]->getValue()),
                                       static_cast<int>(slider1[1]->getValue()));
+            visualizer.getNeedle()->startNeedle(p.getInterval());
         };
 
     // ToggleRed

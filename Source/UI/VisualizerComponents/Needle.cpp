@@ -41,12 +41,12 @@ void Needle::hiResTimerCallback()
     angle += juce::MathConstants<float>::twoPi / steps;
 
     // Ensure the angle stays within the range [0, 2*pi)
-    if (angle >= 3.0f * juce::MathConstants<float>::halfPi)
+    if (juce::roundToInt(juce::radiansToDegrees(angle)) == juce::roundToInt(juce::radiansToDegrees(3.0f * juce::MathConstants<float>::halfPi)))
     {
         juce::int64 endTime = juce::Time::currentTimeMillis();
         juce::int64 timeTaken = endTime - startTime;
 
-        float calc = (180.0f / juce::MathConstants<float>::twoPi) * angle;
+        float calc = (180.0f / juce::MathConstants<float>::pi) * angle;
         DBG("Angle: " + juce::String(calc));
         DBG("Start Time: " + juce::String(startTime));
         DBG("End Time: " + juce::String(endTime));
