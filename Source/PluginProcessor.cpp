@@ -22,14 +22,16 @@ EuclideanRhythmAudioProcessor::EuclideanRhythmAudioProcessor()
                        ), apvts (*this, nullptr, "PARAMETERS", createParameterLayout())
                         , currentSampleRate (0.0f),
                           currentAngleL (0.0f),
-                          currentAngleR (0.0f),
                           angleDelta(0.0f),
                           euclideanPattern (64),
                           patternTrack(0),
                           count(0),
-                          interval(0.0f),
+                          actualInterval(0),
+                          sampleCount(0),
+                          interval(0),
                           duration(0.0f),
-                          isSilent(true)
+                          isSilent(true),
+                          initRed(true)
 #endif
 {
     BPS = 0.0f;
@@ -113,18 +115,6 @@ void EuclideanRhythmAudioProcessor::prepareToPlay (double sampleRate, int sample
         apvts.getRawParameterValue("Steps 1")->load(),
         apvts.getRawParameterValue("Beats 1")->load());
     currentAngle.resize(getNumInputChannels(), 0.0f);
-
-    // Retrieve BPM information from host, else defaults to 120 BPM
-    juce::Optional<double> positionBPM;
-    if (getPlayHead())
-    {
-        positionBPM = getPlayHead()->getPosition()->getBpm();
-    }
-    
-    double currentBPM = (positionBPM.hasValue()) ? positionBPM.operator*() : 120.0;
-    double currentBPS = currentBPM / 60.0;
-    BPS = currentBPS;
-    interval = 1.0f / currentBPS;
 }
 
 void EuclideanRhythmAudioProcessor::releaseResources()
@@ -165,7 +155,33 @@ void EuclideanRhythmAudioProcessor::processBlock (juce::AudioBuffer<float>& buff
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
 
+    // Retrieve BPM information from host, else defaults to 120 BPM
+    juce::Optional<double> positionBPM;
+
+    if (getPlayHead())
+    {
+        positionBPM = getPlayHead()->getPosition()->getBpm();
+    }
+
+    double currentBPM = (positionBPM.hasValue()) ? positionBPM.operator*() : 120.0;
+    double currentBPS = currentBPM / 60.0;
+    BPS = currentBPS;
+    interval = 60.0 / currentBPM * currentSampleRate;
+
     bool isRedOn = ((int)apvts.getRawParameterValue("Toggle Red")->load() == 1) ? true : false;
+
+    while (initRed)
+    {
+        if (sampleCount * 2 >= interval)
+        {
+            actualInterval = sampleCount * 2;
+            sampleCount = interval;
+            initRed = false;
+            break;
+        }
+
+        sampleCount += buffer.getNumSamples();
+    }
 
     // In case we have more outputs than inputs, this code clears any output
     // channels that didn't contain input data, (because these aren't
@@ -201,10 +217,16 @@ void EuclideanRhythmAudioProcessor::processBlock (juce::AudioBuffer<float>& buff
     }
 
     // Get duration to compare with desired interval
-    duration += buffer.getNumSamples() / currentSampleRate;
+    // duration += buffer.getNumSamples() / currentSampleRate;
+    sampleCount += buffer.getNumSamples();
 
-    if ((duration * 2.01 >= interval) && isRedOn)
+    // DBG(sampleCount);
+
+    if (sampleCount * 2 >= interval && isRedOn)
     {
+        // Retrieve actual interval for synchronization purposes
+        actualInterval = sampleCount * 2;
+        sampleCount = 0;
         currentAngleL = 0.0f;
         duration = 0;
 
@@ -233,6 +255,7 @@ void EuclideanRhythmAudioProcessor::processBlock (juce::AudioBuffer<float>& buff
 
 void EuclideanRhythmAudioProcessor::reset()
 {
+    sampleCount = interval;
     patternTrack = 0;
     count = 0;
     currentAngleL = 0.0f;
@@ -376,8 +399,7 @@ void EuclideanRhythmAudioProcessor::updateAngleDelta()
 
 float EuclideanRhythmAudioProcessor::getInterval()
 {
-    float interval = 1.0f / BPS;
-    return interval;
+    return actualInterval / currentSampleRate;
 }
 
 //==============================================================================

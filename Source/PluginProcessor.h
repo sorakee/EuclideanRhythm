@@ -75,11 +75,10 @@ private:
 
     std::vector<float> currentAngle;
     std::vector<bool> euclideanPattern;
-    std::vector<int> sampleCount;
 
-    float currentSampleRate, currentAngleL, currentAngleR, angleDelta, BPS, duration, interval;
-    int patternTrack, count;
-    bool isSilent;
+    float currentSampleRate, currentAngleL, currentAngleR, angleDelta, BPS, duration;
+    int patternTrack, count, sampleCount, interval, actualInterval;
+    bool isSilent, initRed;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EuclideanRhythmAudioProcessor)
