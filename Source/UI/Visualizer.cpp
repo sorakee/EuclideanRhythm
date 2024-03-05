@@ -21,7 +21,7 @@ Visualizer::Visualizer(juce::AudioProcessorValueTreeState& apvts)
     ellipses.resize(4);
     numOfEllipses = { 16, 16, 16, 16 };
     numOfBeats = { 16, 16, 16, 16 };
-    toggle = { true, false, false, false };
+    toggle = { false, false, false, false };
 
     addAndMakeVisible(needle);
 }
@@ -57,13 +57,9 @@ void Visualizer::resized()
 
     for (int color = 0; color < numOfEllipses.size(); ++color)
     {
-        if (toggle[color] == false)
-        {
-            continue;
-        }
-
         createEllipses(color);
         calculateEuclideanRhythm(numOfEllipses[color], numOfBeats[color], color);
+        toggleStatus(color, false);
     }
 }
 
@@ -196,4 +192,16 @@ Needle* Visualizer::getNeedle()
 void Visualizer::toggleStatus(int color, bool status)
 {
     toggle[color] = status;
+    
+    for (auto* ellipse : ellipses[color])
+    {
+        if (status)
+        {
+            ellipse->setVisible(true);
+        }
+        else
+        {
+            ellipse->setVisible(false);
+        }
+    }
 }
