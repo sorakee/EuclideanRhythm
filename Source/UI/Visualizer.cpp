@@ -38,12 +38,17 @@ void Visualizer::paint(juce::Graphics& g)
     juce::Rectangle<float> bounds = getLocalBounds().toFloat();
     juce::Point<float> center = bounds.getCentre();
 
-    // Radius of main circle
-    float radius = juce::jmin(bounds.getWidth(), bounds.getHeight()) * 0.4f;
-
-    // Draw the main circle
     juce::Path circlePath;
-    circlePath.addEllipse(center.getX() - radius, center.getY() - radius, 2 * radius, 2 * radius);
+
+    // Draw the main circles
+    for (int i = 0; i < 4; i++)
+    {
+        // Radius of main circles
+        float radius = juce::jmin(bounds.getWidth(), bounds.getHeight()) * 0.4f;
+        radius *= 1 - (0.25f * i);
+        circlePath.addEllipse(center.getX() - radius, center.getY() - radius, 2 * radius, 2 * radius);
+    }
+    
     g.setColour(juce::Colours::white);
     g.strokePath(circlePath, juce::PathStrokeType(2.5f));
 }
@@ -81,12 +86,15 @@ void Visualizer::createEllipses(int color)
         break;
     case 1:
         c = juce::Colours::limegreen;
+        radius *= 0.75f;
         break;
     case 2:
         c = juce::Colours::skyblue;
+        radius *= 0.50f;
         break;
     case 3:
         c = juce::Colours::yellow;
+        radius *= 0.25f;
         break;
     }
 
@@ -102,7 +110,7 @@ void Visualizer::createEllipses(int color)
         juce::Point<float> centerPos = juce::Point<float>(ellipseX, ellipseY);
         Ellipse* ellipse = new Ellipse(angle, radius, ellipseWidth, ellipseHeight, centerPos, c);
 
-        addAndMakeVisible(ellipses[color].add(ellipse));
+        addAndMakeVisible(ellipses[color].add(ellipse), 0);
     }
 }
 
