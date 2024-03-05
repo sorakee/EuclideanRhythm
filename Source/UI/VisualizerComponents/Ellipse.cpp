@@ -14,12 +14,14 @@ Ellipse::Ellipse(float angle,
                  float radius, 
                  float ellipseWidth, 
                  float ellipseHeight,
-                 juce::Point<float> pos)
+                 juce::Point<float> pos,
+                 juce::Colour color)
         : angle(angle), 
           radius(radius), 
           ellipseWidth(ellipseWidth), 
           ellipseHeight(ellipseHeight),
           position(pos),
+          color(color),
           beat(false)
 {
     setSize(ellipseWidth, ellipseHeight);
@@ -30,7 +32,7 @@ void Ellipse::paint(juce::Graphics& g)
 {
     juce::Rectangle<float> ellipseBounds(0, 0, ellipseWidth, ellipseHeight);
 
-    g.setColour(beat ? juce::Colours::indianred : juce::Colours::white);
+    g.setColour(beat ? color : juce::Colours::white);
     
     g.fillEllipse(ellipseBounds);
 }

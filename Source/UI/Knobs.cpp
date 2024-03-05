@@ -283,8 +283,6 @@ void Knobs::initComponents()
             addAndMakeVisible(component);
         }
     }
-
-   
 }
 
 void Knobs::initLimit()

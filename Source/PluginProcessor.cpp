@@ -163,7 +163,7 @@ void EuclideanRhythmAudioProcessor::processBlock (juce::AudioBuffer<float>& buff
         positionBPM = getPlayHead()->getPosition()->getBpm();
     }
 
-    double currentBPM = (positionBPM.hasValue()) ? positionBPM.operator*() : 120.0;
+    double currentBPM = (positionBPM.hasValue()) ? positionBPM.operator*() : 200.0;
     double currentBPS = currentBPM / 60.0;
     BPS = currentBPS;
     interval = 60.0 / currentBPM * currentSampleRate;

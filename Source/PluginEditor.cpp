@@ -58,7 +58,8 @@ EuclideanRhythmAudioProcessorEditor::EuclideanRhythmAudioProcessorEditor (Euclid
             slider1[2]->repaint();
 
             visualizer.setNumEllipses(static_cast<int>(slider1[0]->getValue()),
-                static_cast<int>(slider1[1]->getValue()));
+                                      static_cast<int>(slider1[1]->getValue()), 
+                                      0);
             visualizer.getNeedle()->setSteps(slider1[0]->getValue());
             visualizer.getNeedle()->startNeedle(p.getInterval());
         };
@@ -68,7 +69,8 @@ EuclideanRhythmAudioProcessorEditor::EuclideanRhythmAudioProcessorEditor (Euclid
             p.reset();
 
             visualizer.setNumEllipses(static_cast<int>(slider1[0]->getValue()),
-                                      static_cast<int>(slider1[1]->getValue()));
+                                      static_cast<int>(slider1[1]->getValue()),
+                                      0);
             visualizer.getNeedle()->startNeedle(p.getInterval());
         };
 
@@ -78,11 +80,13 @@ EuclideanRhythmAudioProcessorEditor::EuclideanRhythmAudioProcessorEditor (Euclid
         {
             if (button1[0]->getToggleState())
             {
+                visualizer.toggleStatus(0, true);
                 visualizer.getNeedle()->setSteps(slider1[0]->getValue());
                 visualizer.getNeedle()->startNeedle(p.getInterval());
             } 
             else
             {
+                visualizer.toggleStatus(0, false);
                 visualizer.getNeedle()->stopNeedle();
             }
         };

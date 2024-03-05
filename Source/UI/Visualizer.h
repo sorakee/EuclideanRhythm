@@ -23,16 +23,20 @@ public:
 	void paint(juce::Graphics&) override;
 	void resized() override;
 
-	void setNumEllipses(int newNumEllipses, int newBeats);
+	void setNumEllipses(int newNumEllipses, int newBeats, int color);
+	void toggleStatus(int color, bool status);
 	Needle* getNeedle();
 
 private:
 	Needle needle;
-	juce::OwnedArray<Ellipse> ellipses;
-	void createEllipses();
-	void calculateEuclideanRhythm(int steps, int beats);
-	int numEllipses;
-	int numBeats;
+	
+	void createEllipses(int color);
+	void calculateEuclideanRhythm(int steps, int beats, int color);
+
+	std::vector<juce::OwnedArray<Ellipse>> ellipses;
+	std::vector<int> numOfEllipses;
+	std::vector<int> numOfBeats;
+	std::vector<bool> toggle;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Visualizer)
 };

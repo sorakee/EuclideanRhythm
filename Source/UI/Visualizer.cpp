@@ -10,9 +10,19 @@
 
 #include "Visualizer.h"
 
-Visualizer::Visualizer(juce::AudioProcessorValueTreeState& apvts) :
-    numEllipses(16), numBeats(16)
+Visualizer::Visualizer(juce::AudioProcessorValueTreeState& apvts)
 {
+    /*
+    * 0 - Red
+    * 1 - Green
+    * 2 - Blue
+    * 3 - Yellow
+    */
+    ellipses.resize(4);
+    numOfEllipses = { 16, 16, 16, 16 };
+    numOfBeats = { 16, 16, 16, 16 };
+    toggle = { true, false, false, false };
+
     addAndMakeVisible(needle);
 }
 
@@ -45,23 +55,48 @@ void Visualizer::resized()
 
     needle.setBounds(bounds.toNearestInt());
 
-    createEllipses();
-    calculateEuclideanRhythm(numEllipses, numBeats);
+    for (int color = 0; color < numOfEllipses.size(); ++color)
+    {
+        if (toggle[color] == false)
+        {
+            continue;
+        }
+
+        createEllipses(color);
+        calculateEuclideanRhythm(numOfEllipses[color], numOfBeats[color], color);
+    }
 }
 
-void Visualizer::createEllipses()
+void Visualizer::createEllipses(int color)
 {
+    juce::Colour c;
     juce::Rectangle<float> bounds = getLocalBounds().toFloat();
     juce::Point<float> center = bounds.getCentre();
 
     // Radius of main circle
     float radius = juce::jmin(bounds.getWidth(), bounds.getHeight()) * 0.4f;
 
-    ellipses.clear();
-
-    for (int i = 0; i < numEllipses; ++i)
+    ellipses[color].clear();
+    
+    switch (color)
     {
-        float angle = (juce::MathConstants<float>::twoPi / numEllipses) * i - juce::MathConstants<float>::pi / 2.0f;
+    case 0:
+        c = juce::Colours::indianred;
+        break;
+    case 1:
+        c = juce::Colours::limegreen;
+        break;
+    case 2:
+        c = juce::Colours::skyblue;
+        break;
+    case 3:
+        c = juce::Colours::yellow;
+        break;
+    }
+
+    for (int i = 0; i < numOfEllipses[color]; ++i)
+    {
+        float angle = (juce::MathConstants<float>::twoPi / numOfEllipses[color]) * i - juce::MathConstants<float>::pi / 2.0f;
         float ellipseX = center.getX() + radius * std::cos(angle);
         float ellipseY = center.getY() + radius * std::sin(angle);
 
@@ -69,16 +104,16 @@ void Visualizer::createEllipses()
         float ellipseHeight = 20.0f;
 
         juce::Point<float> centerPos = juce::Point<float>(ellipseX, ellipseY);
-        Ellipse* ellipse = new Ellipse(angle, radius, ellipseWidth, ellipseHeight, centerPos);
+        Ellipse* ellipse = new Ellipse(angle, radius, ellipseWidth, ellipseHeight, centerPos, c);
 
-        addAndMakeVisible(ellipses.add(ellipse));
+        addAndMakeVisible(ellipses[color].add(ellipse));
     }
 }
 
-void Visualizer::calculateEuclideanRhythm(int steps, int beats)
+void Visualizer::calculateEuclideanRhythm(int steps, int beats, int color)
 {
     // Clear previous beat settings
-    for (auto* ellipse : ellipses)
+    for (auto* ellipse : ellipses[color])
     {
         ellipse->setBeat(false);
     }
@@ -135,20 +170,20 @@ void Visualizer::calculateEuclideanRhythm(int steps, int beats)
     for (int i = 0; i < rhythm.length(); ++i)
     {
         pattern[i] = (rhythm[i] == '1') ? 1 : 0;
-        ellipses[i]->setBeat(pattern[i] == 1);
+        ellipses[color][i]->setBeat(pattern[i] == 1);
     }  
 }
 
-void Visualizer::setNumEllipses(int newNumEllipses, int newBeats)
+void Visualizer::setNumEllipses(int newNumEllipses, int newBeats, int color)
 {
-    if (newNumEllipses != numEllipses || newBeats != numBeats)
+    if (newNumEllipses != numOfEllipses[color] || newBeats != numOfBeats[color])
     {
-        numEllipses = newNumEllipses;
-        numBeats = newBeats;
+        numOfEllipses[color] = newNumEllipses;
+        numOfBeats[color] = newBeats;
         // Reset needle when steps or beats change
         needle.setAngle(-juce::MathConstants<float>::halfPi);
-        createEllipses();
-        calculateEuclideanRhythm(numEllipses, numBeats);
+        createEllipses(color);
+        calculateEuclideanRhythm(numOfEllipses[color], numOfBeats[color], color);
         repaint();
     }
 }
@@ -156,4 +191,9 @@ void Visualizer::setNumEllipses(int newNumEllipses, int newBeats)
 Needle* Visualizer::getNeedle()
 {
     return &needle;
+}
+
+void Visualizer::toggleStatus(int color, bool status)
+{
+    toggle[color] = status;
 }

@@ -19,7 +19,8 @@ public:
             float radius, 
             float ellipseWidth, 
             float ellipseHeight,
-            juce::Point<float> position);
+            juce::Point<float> position,
+            juce::Colour color);
 
     void paint(juce::Graphics&) override;
 
@@ -31,6 +32,7 @@ private:
     float ellipseWidth;
     float ellipseHeight;
     juce::Point<float> position;
+    juce::Colour color;
     bool beat;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Ellipse)
