@@ -71,14 +71,13 @@ private:
 
     // Euclidean Algorithm
     std::vector<bool> calculateEuclideanRhythm (int steps, int beats);
-    std::vector<bool> pattern1, pattern2, pattern3, pattern4;
+    std::vector<bool> pattern;
+    std::vector<std::vector<bool>> patterns;
+    std::vector<bool> isSilent, init;
+    std::vector<int> sampleCount, patternTrack, count, interval, actualInterval;
+    std::vector<float> currentAngle, angleDelta;
 
-    std::vector<float> currentAngle;
-    std::vector<bool> euclideanPattern;
-
-    float currentSampleRate, currentAngleL, currentAngleR, angleDelta, BPS, duration;
-    int patternTrack, count, sampleCount, interval, actualInterval;
-    bool isSilent, initRed;
+    float currentSampleRate, BPS;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EuclideanRhythmAudioProcessor)
