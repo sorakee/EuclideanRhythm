@@ -67,6 +67,7 @@ private:
     juce::AudioPlayHead* playHead;
 
     void updateAngleDelta();
+    void initInterval(juce::AudioBuffer<float>& buffer, int color);
     float calculateSample(float &currentAngle, float &angleDelta);
 
     // Euclidean Algorithm

@@ -124,6 +124,15 @@ void EuclideanRhythmAudioProcessor::prepareToPlay (double sampleRate, int sample
     patterns[0] = calculateEuclideanRhythm(
         apvts.getRawParameterValue("Steps 1")->load(),
         apvts.getRawParameterValue("Beats 1")->load());
+    patterns[1] = calculateEuclideanRhythm(
+        apvts.getRawParameterValue("Steps 2")->load(),
+        apvts.getRawParameterValue("Beats 2")->load());
+    patterns[2] = calculateEuclideanRhythm(
+        apvts.getRawParameterValue("Steps 3")->load(),
+        apvts.getRawParameterValue("Beats 3")->load());
+    patterns[3] = calculateEuclideanRhythm(
+        apvts.getRawParameterValue("Steps 4")->load(),
+        apvts.getRawParameterValue("Beats 4")->load());
 }
 
 void EuclideanRhythmAudioProcessor::releaseResources()
@@ -175,21 +184,22 @@ void EuclideanRhythmAudioProcessor::processBlock (juce::AudioBuffer<float>& buff
     double currentBPM = (positionBPM.hasValue()) ? positionBPM.operator*() : 200.0;
     double currentBPS = currentBPM / 60.0;
     BPS = currentBPS;
+
+    // TODO: Add speed parameter
+    // Calculate interval in samples
     interval[0] = 60.0 / currentBPM * currentSampleRate;
+    interval[1] = 60.0 / currentBPM * currentSampleRate;
+    interval[2] = 60.0 / currentBPM * currentSampleRate;
+    interval[3] = 60.0 / currentBPM * currentSampleRate;
 
     bool isRedOn = ((int)apvts.getRawParameterValue("Toggle Red")->load() == 1) ? true : false;
+    bool isGreenOn = ((int)apvts.getRawParameterValue("Toggle Red")->load() == 1) ? true : false;
+    bool isBlueOn = ((int)apvts.getRawParameterValue("Toggle Red")->load() == 1) ? true : false;
+    bool isYellowOn = ((int)apvts.getRawParameterValue("Toggle Red")->load() == 1) ? true : false;
 
-    while (init[0])
+    for (int i = 0; i < 4; ++i)
     {
-        if (sampleCount[0] * 2 >= interval[0])
-        {
-            actualInterval[0] = sampleCount[0] * 2;
-            sampleCount[0] = interval[0];
-            init[0] = false;
-            break;
-        }
-
-        sampleCount[0] += buffer.getNumSamples();
+        initInterval(buffer, i);
     }
 
     // In case we have more outputs than inputs, this code clears any output
@@ -255,6 +265,22 @@ void EuclideanRhythmAudioProcessor::processBlock (juce::AudioBuffer<float>& buff
     if (!isRedOn)
     {
         reset();
+    }
+}
+
+void EuclideanRhythmAudioProcessor::initInterval(juce::AudioBuffer<float>& buffer, int color)
+{
+    while (init[color])
+    {
+        if (sampleCount[color] * 2 >= interval[color])
+        {
+            actualInterval[color] = sampleCount[color] * 2;
+            sampleCount[color] = interval[color];
+            init[color] = false;
+            break;
+        }
+
+        sampleCount[color] += buffer.getNumSamples();
     }
 }
 
