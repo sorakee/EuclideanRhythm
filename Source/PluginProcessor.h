@@ -67,6 +67,7 @@ private:
     juce::AudioPlayHead* playHead;
 
     void updateAngleDelta();
+    void rhythmTracker(int color, bool toggle);
     void initInterval(juce::AudioBuffer<float>& buffer, int color);
     float calculateSample(float &currentAngle, float &angleDelta);
 

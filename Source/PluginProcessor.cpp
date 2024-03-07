@@ -175,30 +175,21 @@ void EuclideanRhythmAudioProcessor::processBlock (juce::AudioBuffer<float>& buff
 
     // Retrieve BPM information from host, else defaults to 120 BPM
     juce::Optional<double> positionBPM;
-
-    if (getPlayHead())
-    {
-        positionBPM = getPlayHead()->getPosition()->getBpm();
-    }
+    positionBPM = (getPlayHead()) ? getPlayHead()->getPosition()->getBpm() : positionBPM;
 
     double currentBPM = (positionBPM.hasValue()) ? positionBPM.operator*() : 200.0;
     double currentBPS = currentBPM / 60.0;
     BPS = currentBPS;
 
-    // TODO: Add speed parameter
-    // Calculate interval in samples
-    interval[0] = 60.0 / currentBPM * currentSampleRate;
-    interval[1] = 60.0 / currentBPM * currentSampleRate;
-    interval[2] = 60.0 / currentBPM * currentSampleRate;
-    interval[3] = 60.0 / currentBPM * currentSampleRate;
-
     bool isRedOn = ((int)apvts.getRawParameterValue("Toggle Red")->load() == 1) ? true : false;
-    bool isGreenOn = ((int)apvts.getRawParameterValue("Toggle Red")->load() == 1) ? true : false;
-    bool isBlueOn = ((int)apvts.getRawParameterValue("Toggle Red")->load() == 1) ? true : false;
-    bool isYellowOn = ((int)apvts.getRawParameterValue("Toggle Red")->load() == 1) ? true : false;
+    bool isGreenOn = ((int)apvts.getRawParameterValue("Toggle Green")->load() == 1) ? true : false;
+    bool isBlueOn = ((int)apvts.getRawParameterValue("Toggle Blue")->load() == 1) ? true : false;
+    bool isYellowOn = ((int)apvts.getRawParameterValue("Toggle Yellow")->load() == 1) ? true : false;
 
+    // TODO: Add speed parameter
     for (int i = 0; i < 4; ++i)
     {
+        interval[i] = 60.0 / currentBPM * currentSampleRate;
         initInterval(buffer, i);
     }
 
@@ -228,39 +219,21 @@ void EuclideanRhythmAudioProcessor::processBlock (juce::AudioBuffer<float>& buff
 
     for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
     {
-        float currentSample = calculateSample(currentAngle[0], angleDelta[0]);
+        float redSample = (isSilent[0] || !isRedOn) ? 0.0f : calculateSample(currentAngle[0], angleDelta[0]);
+        float greenSample = (isSilent[1] || !isGreenOn) ? 0.0f : calculateSample(currentAngle[1], angleDelta[1]);
+        float blueSample = (isSilent[2] || !isBlueOn) ? 0.0f : calculateSample(currentAngle[2], angleDelta[2]);
+        float yellowSample = (isSilent[3] || !isYellowOn) ? 0.0f : calculateSample(currentAngle[3], angleDelta[3]);
 
-        // Output sound wave to the left channel buffer
-        leftChannel[sample] = (isSilent[0] || !isRedOn) ? 0.0f : (0.125f * currentSample);
-        rightChannel[sample] = (isSilent[0] || !isRedOn) ? 0.0f : (0.125f * currentSample);
+        // Output sound wave to the left and right channel buffer
+        leftChannel[sample] = 0.125f * (redSample + greenSample + blueSample + yellowSample);
+        rightChannel[sample] = 0.125f * (redSample + greenSample + blueSample + yellowSample);
     }
 
     sampleCount[0] += buffer.getNumSamples();
 
     // DBG(sampleCount);
 
-    if (sampleCount[0] * 2 >= interval[0] && isRedOn)
-    {
-        // Retrieve actual interval for synchronization
-        actualInterval[0] = sampleCount[0] * 2;
-        sampleCount[0] = 0;
-        currentAngle[0] = 0.0f;
-
-        isSilent[0] = (patterns[0][patternTrack[0]]) ? !isSilent[0] : true;
-
-        patternTrack[0] += (count[0] == 1) ? 1 : 0;
-
-        if (patternTrack[0] >= apvts.getRawParameterValue("Steps 1")->load())
-        {
-            patternTrack[0] = 0;
-        }
-
-        DBG(patternTrack[0]);
-
-        // Prevents double counting due to sample blocks being processed in each channel
-        // Therefore, sample count * number of channels
-        count[0] = (count[0] % 2 != 0) ? 0 : count[0] + 1;
-    }
+    rhythmTracker(0, isRedOn);
 
     if (!isRedOn)
     {
@@ -293,12 +266,41 @@ void EuclideanRhythmAudioProcessor::reset()
     isSilent[0] = true;
 }
 
+void EuclideanRhythmAudioProcessor::rhythmTracker(int color, bool toggle)
+{
+    if (sampleCount[color] * 2 >= interval[color] && toggle)
+    {
+        // Retrieve actual interval for synchronization
+        actualInterval[color] = sampleCount[color] * 2;
+        sampleCount[color] = 0;
+        currentAngle[color] = 0.0f;
+
+        isSilent[color] = (patterns[color][patternTrack[color]]) ? !isSilent[color] : true;
+
+        patternTrack[color] += (count[color] == 1) ? 1 : 0;
+
+        if (patternTrack[color] >= apvts.getRawParameterValue("Steps " + juce::String(color + 1))->load())
+        {
+            patternTrack[color] = 0;
+        }
+
+        DBG(patternTrack[color]);
+
+        // Prevents double counting due to sample blocks being processed in each channel
+        // Therefore, sample count * number of channels
+        count[color] = (count[color] % 2 != 0) ? 0 : count[color] + 1;
+    }
+}
+
 float EuclideanRhythmAudioProcessor::calculateSample(float &currentAngle, float &angleDelta)
 {
     float currentSample = std::sin(currentAngle);
     currentAngle += angleDelta;
     currentAngle = (currentAngle >= juce::MathConstants<float>::twoPi) ?
         currentAngle - juce::MathConstants<float>::twoPi : currentAngle;
+
+    // Square Wave
+    // currentSample = (currentSample >= 0) ? 1.0f : -1.0f;
 
     return currentSample;
 }
