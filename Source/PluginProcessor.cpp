@@ -120,7 +120,7 @@ void EuclideanRhythmAudioProcessor::prepareToPlay (double sampleRate, int sample
     // initialisation that you need..
     
     currentSampleRate = sampleRate;
-    updateAngleDelta();
+    updateAngleDelta(0, 440.0f);
     patterns[0] = calculateEuclideanRhythm(
         apvts.getRawParameterValue("Steps 1")->load(),
         apvts.getRawParameterValue("Beats 1")->load());
@@ -177,8 +177,8 @@ void EuclideanRhythmAudioProcessor::processBlock (juce::AudioBuffer<float>& buff
     juce::Optional<double> positionBPM;
     positionBPM = (getPlayHead()) ? getPlayHead()->getPosition()->getBpm() : positionBPM;
 
-    double currentBPM = (positionBPM.hasValue()) ? positionBPM.operator*() : 200.0;
-    double currentBPS = currentBPM / 60.0;
+    const double currentBPM = (positionBPM.hasValue()) ? positionBPM.operator*() : 200.0;
+    const double currentBPS = currentBPM / 60.0;
     BPS = currentBPS;
 
     bool isRedOn = ((int)apvts.getRawParameterValue("Toggle Red")->load() == 1) ? true : false;
@@ -205,14 +205,6 @@ void EuclideanRhythmAudioProcessor::processBlock (juce::AudioBuffer<float>& buff
     patterns[0] = calculateEuclideanRhythm(
         apvts.getRawParameterValue("Steps 1")->load(),
         apvts.getRawParameterValue("Beats 1")->load());
-
-    // This is the place where you'd normally do the guts of your plugin's
-    // audio processing...
-    // Make sure to reset the state if your inner loop is processing
-    // the samples and the outer loop is handling the channels.
-    // Alternatively, you can process the samples with the channels
-    // interleaved by keeping the same state.
-    // Count total number of samples
 
     auto* leftChannel = buffer.getWritePointer(0);
     auto* rightChannel = buffer.getWritePointer(1);
@@ -424,10 +416,10 @@ std::vector<bool> EuclideanRhythmAudioProcessor::calculateEuclideanRhythm(int st
     return pattern;
 }
 
-void EuclideanRhythmAudioProcessor::updateAngleDelta()
+void EuclideanRhythmAudioProcessor::updateAngleDelta(int color, float frequency)
 {
-    const float frequency = 440.0f; // A4
-    angleDelta[0] = juce::MathConstants<float>::twoPi * (frequency / currentSampleRate);
+    // const float frequency = 440.0f; // A4
+    angleDelta[color] = juce::MathConstants<float>::twoPi * (frequency / currentSampleRate);
 }
 
 float EuclideanRhythmAudioProcessor::getInterval()
