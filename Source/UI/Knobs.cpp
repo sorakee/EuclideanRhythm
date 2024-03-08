@@ -261,14 +261,26 @@ std::vector<juce::Slider*> Knobs::getSliders(int compNum)
     return comps;
 }
 
-std::vector<juce::ShapeButton*> Knobs::getToggles()
+juce::ShapeButton* Knobs::getToggle(int compNum)
 {
-    return {
-        &toggleRed,
-        &toggleGreen,
-        &toggleBlue,
-        &toggleYellow
-    };
+    switch (compNum + 1)
+    {
+    case 1:
+        return &toggleRed;
+        break;
+    case 2:
+        return &toggleGreen;
+        break;
+    case 3:
+        return &toggleBlue;
+        break;
+    case 4:
+        return &toggleYellow;
+        break;
+    default:
+        return NULL;
+        break;
+    }
 }
 
 void Knobs::initComponents()

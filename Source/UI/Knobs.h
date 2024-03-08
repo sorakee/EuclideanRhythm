@@ -24,8 +24,9 @@ public:
 	void paint(juce::Graphics&) override;
 	void resized() override;
 
+	juce::ShapeButton* getToggle(int compNum);
 	std::vector<juce::Slider*> getSliders(int compNum);
-	std::vector<juce::ShapeButton*> getToggles();
+	
 private:
 
 	using SliderAttachment = juce::AudioProcessorValueTreeState::SliderAttachment;

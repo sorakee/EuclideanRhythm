@@ -36,5 +36,7 @@ private:
     Visualizer visualizer;
     juce::TextButton placeholder;
 
+    void eventHandler(EuclideanRhythmAudioProcessor&);
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EuclideanRhythmAudioProcessorEditor)
 };
