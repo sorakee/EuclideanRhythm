@@ -31,7 +31,7 @@ Visualizer::Visualizer(juce::AudioProcessorValueTreeState& apvts)
 
     for (int i = 0; i < 4; ++i)
     {
-        float factor = 0.25f + (0.25f * i);
+        float factor = 0.4f + (0.2f * i);
         juce::Colour colour;
 
         switch (i)
@@ -78,7 +78,7 @@ void Visualizer::paint(juce::Graphics& g)
     {
         // Radius of main circles
         float radius = juce::jmin(bounds.getWidth(), bounds.getHeight()) * 0.4f;
-        radius *= 1 - (0.25f * i);
+        radius *= 1 - (0.2f * i);
         circlePath.addEllipse(center.getX() - radius, center.getY() - radius, 2 * radius, 2 * radius);
     }
     
@@ -127,15 +127,15 @@ void Visualizer::createEllipses(int color)
         break;
     case 1:
         c = juce::Colours::limegreen;
-        radius *= 0.75f;
+        radius *= 0.8f;
         break;
     case 2:
         c = juce::Colours::skyblue;
-        radius *= 0.50f;
+        radius *= 0.6f;
         break;
     case 3:
         c = juce::Colours::yellow;
-        radius *= 0.25f;
+        radius *= 0.4f;
         break;
     }
 
@@ -252,5 +252,14 @@ void Visualizer::toggleStatus(int color, bool status)
         {
             ellipse->setVisible(false);
         }
+    }
+
+    if (status)
+    {
+        needles[color]->setVisible(true);
+    }
+    else
+    {
+        needles[color]->setVisible(false);
     }
 }
