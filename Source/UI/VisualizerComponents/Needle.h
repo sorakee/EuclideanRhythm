@@ -22,6 +22,8 @@ public:
     void paint(juce::Graphics&) override;
     void hiResTimerCallback() override;
 
+    void setColour(juce::Colour);
+    void setFactor(float);
     void setAngle(float);
     void setSteps(int);
     void startNeedle(float);
@@ -29,8 +31,9 @@ public:
 
 private:
     int steps;
-    float angle, samplesPerBeat;
+    float angle, samplesPerBeat, factor;
     juce::int64 startTime;
+    juce::Colour colour;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Needle)
 };

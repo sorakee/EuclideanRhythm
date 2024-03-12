@@ -25,15 +25,16 @@ public:
 
 	void setNumEllipses(int newNumEllipses, int newBeats, int color);
 	void toggleStatus(int color, bool status);
-	Needle* getNeedle();
+	Needle* getNeedle(int color);
 
 private:
-	Needle needle;
-	
+	Needle needleRed, needleGreen, needleBlue, needleYellow;
+
 	void createEllipses(int color);
 	void calculateEuclideanRhythm(int steps, int beats, int color);
 
 	std::vector<juce::OwnedArray<Ellipse>> ellipses;
+	std::vector<Needle*> needles;
 	std::vector<int> numOfEllipses;
 	std::vector<int> numOfBeats;
 	std::vector<bool> toggle;

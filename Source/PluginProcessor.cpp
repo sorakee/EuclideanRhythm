@@ -202,9 +202,21 @@ void EuclideanRhythmAudioProcessor::processBlock (juce::AudioBuffer<float>& buff
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear(i, 0, buffer.getNumSamples());
     
+    // Remember : Get it right first, optimize later
+    // OPTIONAL : Store previous parameter values to prevent recalculation 
+    // every time processBlock is called
     patterns[0] = calculateEuclideanRhythm(
         apvts.getRawParameterValue("Steps 1")->load(),
         apvts.getRawParameterValue("Beats 1")->load());
+    patterns[1] = calculateEuclideanRhythm(
+        apvts.getRawParameterValue("Steps 2")->load(),
+        apvts.getRawParameterValue("Beats 2")->load());
+    patterns[2] = calculateEuclideanRhythm(
+        apvts.getRawParameterValue("Steps 3")->load(),
+        apvts.getRawParameterValue("Beats 3")->load());
+    patterns[3] = calculateEuclideanRhythm(
+        apvts.getRawParameterValue("Steps 4")->load(),
+        apvts.getRawParameterValue("Beats 4")->load());
 
     auto* leftChannel = buffer.getWritePointer(0);
     auto* rightChannel = buffer.getWritePointer(1);
@@ -229,7 +241,7 @@ void EuclideanRhythmAudioProcessor::processBlock (juce::AudioBuffer<float>& buff
 
     if (!isRedOn)
     {
-        reset();
+        reset(0);
     }
 }
 
@@ -249,13 +261,13 @@ void EuclideanRhythmAudioProcessor::initInterval(juce::AudioBuffer<float>& buffe
     }
 }
 
-void EuclideanRhythmAudioProcessor::reset()
+void EuclideanRhythmAudioProcessor::reset(int color)
 {
-    sampleCount[0] = interval[0];
-    patternTrack[0] = 0;
-    count[0] = 0;
-    currentAngle[0] = 0.0f;
-    isSilent[0] = true;
+    sampleCount[color] = interval[color];
+    patternTrack[color] = 0;
+    count[color] = 0;
+    currentAngle[color] = 0.0f;
+    isSilent[color] = true;
 }
 
 void EuclideanRhythmAudioProcessor::rhythmTracker(int color, bool toggle)

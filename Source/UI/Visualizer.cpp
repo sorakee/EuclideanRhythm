@@ -22,8 +22,41 @@ Visualizer::Visualizer(juce::AudioProcessorValueTreeState& apvts)
     numOfEllipses = { 16, 16, 16, 16 };
     numOfBeats = { 16, 16, 16, 16 };
     toggle = { false, false, false, false };
+    needles = {
+        &needleRed,
+        &needleGreen,
+        &needleBlue,
+        &needleYellow
+    };
 
-    addAndMakeVisible(needle);
+    for (int i = 0; i < 4; ++i)
+    {
+        float factor = 0.25f + (0.25f * i);
+        juce::Colour colour;
+
+        switch (i)
+        {
+        case 0:
+            colour = juce::Colours::yellow;
+            break;
+        case 1:
+            colour = juce::Colours::skyblue;
+            break;
+        case 2:
+            colour = juce::Colours::limegreen;
+            break;
+        case 3:
+            colour = juce::Colours::indianred;
+            break;
+        default:
+            break;
+        }
+
+        // Ensures red needle (longest) is on top of other needles
+        needles[3 - i]->setFactor(factor);
+        needles[3 - i]->setColour(colour);
+        addAndMakeVisible(needles[3 - i]);
+    }
 }
 
 Visualizer::~Visualizer()
@@ -58,12 +91,20 @@ void Visualizer::resized()
     juce::Rectangle<float> bounds = getLocalBounds().toFloat();
     juce::Point<float> center = bounds.getCentre();
 
-    needle.setBounds(bounds.toNearestInt());
+
+    for (auto* needle : needles)
+    {
+        needle->setBounds(bounds.toNearestInt());
+    }
 
     for (int color = 0; color < numOfEllipses.size(); ++color)
     {
         createEllipses(color);
         calculateEuclideanRhythm(numOfEllipses[color], numOfBeats[color], color);
+
+        // Prevents ellipses from disappearing when resizing window
+        if (toggle[color] == true) continue;
+
         toggleStatus(color, false);
     }
 }
@@ -185,16 +226,16 @@ void Visualizer::setNumEllipses(int newNumEllipses, int newBeats, int color)
         numOfEllipses[color] = newNumEllipses;
         numOfBeats[color] = newBeats;
         // Reset needle when steps or beats change
-        needle.setAngle(-juce::MathConstants<float>::halfPi);
+        needles[color]->setAngle(-juce::MathConstants<float>::halfPi);
         createEllipses(color);
         calculateEuclideanRhythm(numOfEllipses[color], numOfBeats[color], color);
         repaint();
     }
 }
 
-Needle* Visualizer::getNeedle()
+Needle* Visualizer::getNeedle(int color)
 {
-    return &needle;
+    return needles[color];
 }
 
 void Visualizer::toggleStatus(int color, bool status)

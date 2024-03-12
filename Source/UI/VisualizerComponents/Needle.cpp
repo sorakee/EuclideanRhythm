@@ -13,7 +13,9 @@
 Needle::Needle() : angle(-juce::MathConstants<float>::halfPi)
 {
     startTime = juce::Time::currentTimeMillis();
+    colour = juce::Colours::indianred;
     samplesPerBeat = 0.0f;
+    factor = 1.0f;
     steps = 16;
 }
 
@@ -28,7 +30,9 @@ void Needle::paint(juce::Graphics& g)
     juce::Point<float> center = bounds.getCentre();
     float length = juce::jmin(bounds.getWidth(), bounds.getHeight()) * 0.4f;
 
-    g.setColour(juce::Colours::indianred);
+    length = length * factor;
+
+    g.setColour(colour);
     g.drawLine(center.getX(), center.getY(),
                center.getX() + std::cos(angle) * length,
                center.getY() + std::sin(angle) * length, 5.0f);
@@ -47,10 +51,10 @@ void Needle::hiResTimerCallback()
         juce::int64 timeTaken = endTime - startTime;
 
         float calc = (180.0f / juce::MathConstants<float>::pi) * angle;
-        DBG("Angle: " + juce::String(calc));
-        DBG("Start Time: " + juce::String(startTime));
-        DBG("End Time: " + juce::String(endTime));
-        DBG("Time taken: " + juce::String(timeTaken));
+        // DBG("Angle: " + juce::String(calc));
+        // DBG("Start Time: " + juce::String(startTime));
+        // DBG("End Time: " + juce::String(endTime));
+        // DBG("Time taken: " + juce::String(timeTaken));
 
         startTime = endTime;
 
@@ -59,6 +63,18 @@ void Needle::hiResTimerCallback()
 
     // Trigger a repaint
     const juce::MessageManagerLock myLock;
+    this->repaint();
+}
+
+void Needle::setColour(juce::Colour c)
+{
+    colour = c;
+    this->repaint();
+}
+
+void Needle::setFactor(float fact)
+{
+    factor = fact;
     this->repaint();
 }
 

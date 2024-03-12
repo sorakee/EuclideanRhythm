@@ -94,11 +94,17 @@ void EuclideanRhythmAudioProcessorEditor::eventHandler(EuclideanRhythmAudioProce
 
     for (int i = 0; i < numComps; ++i)
     {
+        // i refers to group of knobs
+        // i = 0 -> red group
+        // i = 1 -> green group
+        // i = 2 -> blue group
+        // i = 3 -> yellow group
+
         // Retrieve slider from Knobs class
         std::vector<juce::Slider*> slider = knobs.getSliders(i);
-        slider[0]->onDragEnd = [this, slider, &p]
+        slider[0]->onDragEnd = [this, slider, &p, i]
             {
-                p.reset();
+                p.reset(i);
 
                 if (slider[1]->getValue() > slider[0]->getValue())
                 {
@@ -120,35 +126,35 @@ void EuclideanRhythmAudioProcessorEditor::eventHandler(EuclideanRhythmAudioProce
 
                 visualizer.setNumEllipses(static_cast<int>(slider[0]->getValue()),
                     static_cast<int>(slider[1]->getValue()),
-                    0);
-                visualizer.getNeedle()->setSteps(slider[0]->getValue());
-                visualizer.getNeedle()->startNeedle(p.getInterval());
+                    i);
+                visualizer.getNeedle(i)->setSteps(slider[0]->getValue());
+                visualizer.getNeedle(i)->startNeedle(p.getInterval());
             };
 
-        slider[1]->onDragEnd = [this, slider, &p]
+        slider[1]->onDragEnd = [this, slider, &p, i]
             {
-                p.reset();
+                p.reset(i);
 
                 visualizer.setNumEllipses(static_cast<int>(slider[0]->getValue()),
                     static_cast<int>(slider[1]->getValue()),
-                    0);
-                visualizer.getNeedle()->startNeedle(p.getInterval());
+                    i);
+                visualizer.getNeedle(i)->startNeedle(p.getInterval());
             };
 
         // Retrieve toggle from Knobs class
-        juce::ShapeButton* button1 = knobs.getToggle(i);
-        button1->onClick = [this, button1, slider, &p, i]
+        juce::ShapeButton* button = knobs.getToggle(i);
+        button->onClick = [this, button, slider, &p, i]
             {
-                if (button1->getToggleState())
+                if (button->getToggleState())
                 {
                     visualizer.toggleStatus(i, true);
-                    visualizer.getNeedle()->setSteps(slider[0]->getValue());
-                    visualizer.getNeedle()->startNeedle(p.getInterval());
+                    visualizer.getNeedle(i)->setSteps(slider[0]->getValue());
+                    visualizer.getNeedle(i)->startNeedle(p.getInterval());
                 }
                 else
                 {
                     visualizer.toggleStatus(i, false);
-                    visualizer.getNeedle()->stopNeedle();
+                    visualizer.getNeedle(i)->stopNeedle();
                 }
             };
     }
