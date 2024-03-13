@@ -121,6 +121,7 @@ void EuclideanRhythmAudioProcessor::prepareToPlay (double sampleRate, int sample
     
     currentSampleRate = sampleRate;
 
+    // TODO : Frequency modulation
     updateAngleDelta(0, 440.0f);
     updateAngleDelta(1, 220.0f);
     updateAngleDelta(2, 1000.0f);
@@ -268,7 +269,6 @@ void EuclideanRhythmAudioProcessor::processBlock (juce::AudioBuffer<float>& buff
         {
             reset(i);
         }
-
     }
     
     // DBG(sampleCount[color]);

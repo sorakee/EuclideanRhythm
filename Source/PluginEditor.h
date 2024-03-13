@@ -34,7 +34,7 @@ private:
     juce::AudioProcessorValueTreeState& apvts;
     Knobs knobs;
     Visualizer visualizer;
-    juce::TextButton placeholder;
+    juce::TextButton reset;
 
     void eventHandler(EuclideanRhythmAudioProcessor&);
 

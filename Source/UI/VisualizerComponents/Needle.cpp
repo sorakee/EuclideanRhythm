@@ -16,7 +16,7 @@ Needle::Needle() : angle(-juce::MathConstants<float>::halfPi)
     colour = juce::Colours::indianred;
     samplesPerBeat = 0.0f;
     factor = 1.0f;
-    steps = 16;
+    steps = 8;
 }
 
 Needle::~Needle()

@@ -19,11 +19,11 @@ EuclideanRhythmAudioProcessorEditor::EuclideanRhythmAudioProcessorEditor (Euclid
     visualizer (apvts)
 {
     // Placeholder
-    placeholder.setColour(juce::TextButton::buttonColourId,
+    reset.setColour(juce::TextButton::buttonColourId,
         juce::Colours::cornflowerblue);
-    placeholder.setButtonText("PLACEHOLDER");
+    reset.setButtonText("Reset");
 
-    addAndMakeVisible(placeholder);
+    addAndMakeVisible(reset);
     addAndMakeVisible(visualizer);
     addAndMakeVisible(knobs);
 
@@ -75,8 +75,8 @@ void EuclideanRhythmAudioProcessorEditor::resized()
     // Reserve upper control area for knobs
     knobs.setBounds(controlArea.removeFromTop(controlArea.getHeight() * 0.8));
 
-    // Reserve bottom control area for playback buttons
-    placeholder.setBounds(controlArea);
+    // Reserve bottom control area for misc buttons
+    reset.setBounds(controlArea);
 }
 
 void EuclideanRhythmAudioProcessorEditor::eventHandler(EuclideanRhythmAudioProcessor& p)
@@ -158,6 +158,25 @@ void EuclideanRhythmAudioProcessorEditor::eventHandler(EuclideanRhythmAudioProce
                 }
             };
     }
+
+    reset.onClick = [this, &p]
+        {
+            reset.setEnabled(false);
+
+            for (int i = 0; i < 4; ++i)
+            {
+                if (!knobs.getToggle(i)->getToggleState()) 
+                { 
+                    continue;
+                }
+
+                p.reset(i);
+                visualizer.getNeedle(i)->stopNeedle();
+                visualizer.getNeedle(i)->startNeedle(p.getInterval(i));
+            }
+
+            reset.setEnabled(true);
+        };
 
     // ALTERNATE METHOD IN CASE ABOVE METHOD DOESN'T WORK
     /*
