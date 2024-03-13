@@ -161,8 +161,6 @@ void EuclideanRhythmAudioProcessorEditor::eventHandler(EuclideanRhythmAudioProce
 
     reset.onClick = [this, &p]
         {
-            reset.setEnabled(false);
-
             for (int i = 0; i < 4; ++i)
             {
                 if (!knobs.getToggle(i)->getToggleState()) 
@@ -171,11 +169,8 @@ void EuclideanRhythmAudioProcessorEditor::eventHandler(EuclideanRhythmAudioProce
                 }
 
                 p.reset(i);
-                visualizer.getNeedle(i)->stopNeedle();
-                visualizer.getNeedle(i)->startNeedle(p.getInterval(i));
+                visualizer.getNeedle(i)->resetNeedle();
             }
-
-            reset.setEnabled(true);
         };
 
     // ALTERNATE METHOD IN CASE ABOVE METHOD DOESN'T WORK

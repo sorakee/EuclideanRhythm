@@ -15,6 +15,7 @@ Needle::Needle() : angle(-juce::MathConstants<float>::halfPi)
     startTime = juce::Time::currentTimeMillis();
     colour = juce::Colours::indianred;
     samplesPerBeat = 0.0f;
+    prevInterval = 0.0f;
     factor = 1.0f;
     steps = 8;
 }
@@ -88,9 +89,22 @@ void Needle::setSteps(int newSteps)
     steps = newSteps;
 }
 
+// Reset needle when steps/beats/offset changes and start with new interval
 void Needle::startNeedle(float interval)
 {
+    prevInterval = interval;
     startTimer(juce::roundToInt(interval * 1000));
+    startTime = juce::Time::currentTimeMillis();
+}
+
+// Reset needle timer using previous interval when user clicks the 'Reset' button
+void Needle::resetNeedle()
+{
+    stopTimer();
+    angle = -juce::MathConstants<float>::halfPi;
+    this->repaint();
+
+    startTimer(juce::roundToInt(prevInterval * 1000));
     startTime = juce::Time::currentTimeMillis();
 }
 

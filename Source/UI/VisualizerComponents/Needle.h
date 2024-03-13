@@ -27,11 +27,12 @@ public:
     void setAngle(float);
     void setSteps(int);
     void startNeedle(float);
+    void resetNeedle();
     void stopNeedle();
 
 private:
     int steps;
-    float angle, samplesPerBeat, factor;
+    float angle, samplesPerBeat, factor, prevInterval;
     juce::int64 startTime;
     juce::Colour colour;
 
