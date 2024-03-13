@@ -128,7 +128,7 @@ void EuclideanRhythmAudioProcessorEditor::eventHandler(EuclideanRhythmAudioProce
                     static_cast<int>(slider[1]->getValue()),
                     i);
                 visualizer.getNeedle(i)->setSteps(slider[0]->getValue());
-                visualizer.getNeedle(i)->startNeedle(p.getInterval());
+                visualizer.getNeedle(i)->startNeedle(p.getInterval(i));
             };
 
         slider[1]->onDragEnd = [this, slider, &p, i]
@@ -138,7 +138,7 @@ void EuclideanRhythmAudioProcessorEditor::eventHandler(EuclideanRhythmAudioProce
                 visualizer.setNumEllipses(static_cast<int>(slider[0]->getValue()),
                     static_cast<int>(slider[1]->getValue()),
                     i);
-                visualizer.getNeedle(i)->startNeedle(p.getInterval());
+                visualizer.getNeedle(i)->startNeedle(p.getInterval(i));
             };
 
         // Retrieve toggle from Knobs class
@@ -149,7 +149,7 @@ void EuclideanRhythmAudioProcessorEditor::eventHandler(EuclideanRhythmAudioProce
                 {
                     visualizer.toggleStatus(i, true);
                     visualizer.getNeedle(i)->setSteps(slider[0]->getValue());
-                    visualizer.getNeedle(i)->startNeedle(p.getInterval());
+                    visualizer.getNeedle(i)->startNeedle(p.getInterval(i));
                 }
                 else
                 {

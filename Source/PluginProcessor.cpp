@@ -120,7 +120,12 @@ void EuclideanRhythmAudioProcessor::prepareToPlay (double sampleRate, int sample
     // initialisation that you need..
     
     currentSampleRate = sampleRate;
+
     updateAngleDelta(0, 440.0f);
+    updateAngleDelta(1, 220.0f);
+    updateAngleDelta(2, 1000.0f);
+    updateAngleDelta(3, 2000.0f);
+
     patterns[0] = calculateEuclideanRhythm(
         apvts.getRawParameterValue("Steps 1")->load(),
         apvts.getRawParameterValue("Beats 1")->load());
@@ -173,7 +178,7 @@ void EuclideanRhythmAudioProcessor::processBlock (juce::AudioBuffer<float>& buff
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
 
-    // Retrieve BPM information from host, else defaults to 120 BPM
+    // Retrieve BPM information from host, else defaults to specified BPM
     juce::Optional<double> positionBPM;
     positionBPM = (getPlayHead()) ? getPlayHead()->getPosition()->getBpm() : positionBPM;
 
@@ -223,26 +228,50 @@ void EuclideanRhythmAudioProcessor::processBlock (juce::AudioBuffer<float>& buff
 
     for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
     {
-        float redSample = (isSilent[0] || !isRedOn) ? 0.0f : calculateSample(currentAngle[0], angleDelta[0]);
-        float greenSample = (isSilent[1] || !isGreenOn) ? 0.0f : calculateSample(currentAngle[1], angleDelta[1]);
-        float blueSample = (isSilent[2] || !isBlueOn) ? 0.0f : calculateSample(currentAngle[2], angleDelta[2]);
-        float yellowSample = (isSilent[3] || !isYellowOn) ? 0.0f : calculateSample(currentAngle[3], angleDelta[3]);
+        // TODO : Add volume param
+        float redSample = (isSilent[0] || !isRedOn) ? 0.0f : 0.25f * calculateSample(0);
+        float greenSample = (isSilent[1] || !isGreenOn) ? 0.0f : 0.125f * calculateSample(1);
+        float blueSample = (isSilent[2] || !isBlueOn) ? 0.0f : 0.125f * calculateSample(2);
+        float yellowSample = (isSilent[3] || !isYellowOn) ? 0.0f : 0.125f * calculateSample(3);
 
         // Output sound wave to the left and right channel buffer
-        leftChannel[sample] = 0.125f * (redSample + greenSample + blueSample + yellowSample);
-        rightChannel[sample] = 0.125f * (redSample + greenSample + blueSample + yellowSample);
+        leftChannel[sample] = redSample + greenSample + blueSample + yellowSample;
+        rightChannel[sample] = redSample + greenSample + blueSample + yellowSample;
     }
 
-    sampleCount[0] += buffer.getNumSamples();
-
-    // DBG(sampleCount);
-
-    rhythmTracker(0, isRedOn);
-
-    if (!isRedOn)
+    for (int i = 0; i < 4; ++i)
     {
-        reset(0);
+        bool status = false;
+
+        switch (i)
+        {
+        case 0:
+            status = isRedOn;
+            break;
+        case 1:
+            status = isGreenOn;
+            break;
+        case 2:
+            status = isBlueOn;
+            break;
+        case 3:
+            status = isYellowOn;
+            break;
+        default:
+            break;
+        }
+
+        sampleCount[i] += buffer.getNumSamples();
+        rhythmTracker(i, status);
+
+        if (!status)
+        {
+            reset(i);
+        }
+
     }
+    
+    // DBG(sampleCount[color]);
 }
 
 void EuclideanRhythmAudioProcessor::initInterval(juce::AudioBuffer<float>& buffer, int color)
@@ -288,7 +317,7 @@ void EuclideanRhythmAudioProcessor::rhythmTracker(int color, bool toggle)
             patternTrack[color] = 0;
         }
 
-        DBG(patternTrack[color]);
+        // DBG(patternTrack[color]);
 
         // Prevents double counting due to sample blocks being processed in each channel
         // Therefore, sample count * number of channels
@@ -296,15 +325,26 @@ void EuclideanRhythmAudioProcessor::rhythmTracker(int color, bool toggle)
     }
 }
 
-float EuclideanRhythmAudioProcessor::calculateSample(float &currentAngle, float &angleDelta)
+float EuclideanRhythmAudioProcessor::calculateSample(int color)
 {
-    float currentSample = std::sin(currentAngle);
-    currentAngle += angleDelta;
-    currentAngle = (currentAngle >= juce::MathConstants<float>::twoPi) ?
-        currentAngle - juce::MathConstants<float>::twoPi : currentAngle;
+    float currentSample = std::sin(currentAngle[color]);
+    currentAngle[color] += angleDelta[color];
+    currentAngle[color] = (currentAngle[color] >= juce::MathConstants<float>::twoPi) ?
+        currentAngle[color] - juce::MathConstants<float>::twoPi : currentAngle[color];
 
-    // Square Wave
-    // currentSample = (currentSample >= 0) ? 1.0f : -1.0f;
+    switch (color)
+    {
+    case 1:
+        // Square Wave
+        currentSample = (currentSample >= 0) ? 1.0f : -1.0f;
+        break;
+    case 2:
+        break;
+    case 3:
+        break;
+    default:
+        break;
+    }
 
     return currentSample;
 }
@@ -349,8 +389,8 @@ juce::AudioProcessorValueTreeState::ParameterLayout
         auto stepsParam = juce::String(std::string("Steps ") + std::to_string(i + 1));
         auto beatsParam = juce::String(std::string("Beats ") + std::to_string(i + 1));
         auto offsetParam = juce::String(std::string("Offset ") + std::to_string(i + 1));
-        layout.add(std::make_unique<juce::AudioParameterInt>(stepsParam, stepsParam, 1, 48, 16));
-        layout.add(std::make_unique<juce::AudioParameterInt>(beatsParam, beatsParam, 0, 48, 16));
+        layout.add(std::make_unique<juce::AudioParameterInt>(stepsParam, stepsParam, 1, 48, 8));
+        layout.add(std::make_unique<juce::AudioParameterInt>(beatsParam, beatsParam, 0, 48, 8));
         layout.add(std::make_unique<juce::AudioParameterInt>(offsetParam, offsetParam, 0, 48, 0));
     }
 
@@ -430,13 +470,12 @@ std::vector<bool> EuclideanRhythmAudioProcessor::calculateEuclideanRhythm(int st
 
 void EuclideanRhythmAudioProcessor::updateAngleDelta(int color, float frequency)
 {
-    // const float frequency = 440.0f; // A4
     angleDelta[color] = juce::MathConstants<float>::twoPi * (frequency / currentSampleRate);
 }
 
-float EuclideanRhythmAudioProcessor::getInterval()
+float EuclideanRhythmAudioProcessor::getInterval(int color)
 {
-    return actualInterval[0] / currentSampleRate;
+    return actualInterval[color] / currentSampleRate;
 }
 
 //==============================================================================

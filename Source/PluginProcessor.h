@@ -57,7 +57,7 @@ public:
     void setStateInformation (const void* data, int sizeInBytes) override;
 
     //==============================================================================
-    float getInterval();
+    float getInterval(int color);
     void reset(int color);
 
 private:
@@ -69,7 +69,7 @@ private:
     void updateAngleDelta(int color, float frequency);
     void rhythmTracker(int color, bool toggle);
     void initInterval(juce::AudioBuffer<float>& buffer, int color);
-    float calculateSample(float &currentAngle, float &angleDelta);
+    float calculateSample(int color);
 
     // Euclidean Algorithm
     std::vector<bool> calculateEuclideanRhythm (int steps, int beats);

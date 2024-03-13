@@ -19,8 +19,8 @@ Visualizer::Visualizer(juce::AudioProcessorValueTreeState& apvts)
     * 3 - Yellow
     */
     ellipses.resize(4);
-    numOfEllipses = { 16, 16, 16, 16 };
-    numOfBeats = { 16, 16, 16, 16 };
+    numOfEllipses = { 8, 8, 8, 8 };
+    numOfBeats = { 8, 8, 8, 8 };
     toggle = { false, false, false, false };
     needles = {
         &needleRed,
