@@ -212,9 +212,10 @@ void Visualizer::calculateEuclideanRhythm(int steps, int beats, int color, int o
     for (int i = 1; i <= y_amount; i++)
         rhythm += y;
 
-    if (offsetVals[color] != 0)
+    if (offset != 0)
     {
-        std::rotate(rhythm.begin(), rhythm.begin() + offset, rhythm.end());
+        int offsetMod = offset % steps;
+        std::rotate(rhythm.begin(), rhythm.begin() + offsetMod, rhythm.end());
     }
     
     // Set beat status based on Euclidean rhythm
