@@ -116,8 +116,6 @@ void EuclideanRhythmAudioProcessorEditor::eventHandler(EuclideanRhythmAudioProce
                     slider[2]->setValue(slider[0]->getValue());
                 }
 
-                auto beatRange = slider[1]->getRange();
-                auto sliderRange = slider[2]->getRange();
                 slider[1]->setRange(0, slider[0]->getValue(), 1);
                 slider[2]->setRange(0, slider[0]->getValue(), 1);
 

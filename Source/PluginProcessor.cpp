@@ -486,7 +486,9 @@ std::vector<bool> EuclideanRhythmAudioProcessor::calculateEuclideanRhythm(int st
 
     if (offset != 0)
     {
-        std::rotate(rhythm.begin(), rhythm.begin() + offset, rhythm.end());
+        // Ensure offset does not exceed size of 'rhythm' size
+        int offsetMod = offset % steps;
+        std::rotate(rhythm.begin(), rhythm.begin() + offsetMod, rhythm.end());
     }
 
     // Set beat status based on Euclidean rhythm
