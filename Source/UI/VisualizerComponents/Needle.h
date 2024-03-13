@@ -22,11 +22,11 @@ public:
     void paint(juce::Graphics&) override;
     void hiResTimerCallback() override;
 
-    void setColour(juce::Colour);
-    void setFactor(float);
-    void setAngle(float);
-    void setSteps(int);
-    void startNeedle(float);
+    void setColour(juce::Colour newColour);
+    void setFactor(float newFactor);
+    void setAngle(float newAngle);
+    void setSteps(int newSteps);
+    void startNeedle(float interval);
     void resetNeedle();
     void stopNeedle();
 

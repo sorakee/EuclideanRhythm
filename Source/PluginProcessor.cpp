@@ -123,22 +123,26 @@ void EuclideanRhythmAudioProcessor::prepareToPlay (double sampleRate, int sample
 
     // TODO : Frequency modulation
     updateAngleDelta(0, 440.0f);
-    updateAngleDelta(1, 220.0f);
-    updateAngleDelta(2, 1000.0f);
-    updateAngleDelta(3, 2000.0f);
+    updateAngleDelta(1, 440.0f);
+    updateAngleDelta(2, 440.0f);
+    updateAngleDelta(3, 440.0f);
 
     patterns[0] = calculateEuclideanRhythm(
         apvts.getRawParameterValue("Steps 1")->load(),
-        apvts.getRawParameterValue("Beats 1")->load());
+        apvts.getRawParameterValue("Beats 1")->load(),
+        apvts.getRawParameterValue("Offset 1")->load());
     patterns[1] = calculateEuclideanRhythm(
         apvts.getRawParameterValue("Steps 2")->load(),
-        apvts.getRawParameterValue("Beats 2")->load());
+        apvts.getRawParameterValue("Beats 2")->load(),
+        apvts.getRawParameterValue("Offset 2")->load());
     patterns[2] = calculateEuclideanRhythm(
         apvts.getRawParameterValue("Steps 3")->load(),
-        apvts.getRawParameterValue("Beats 3")->load());
+        apvts.getRawParameterValue("Beats 3")->load(),
+        apvts.getRawParameterValue("Offset 3")->load());
     patterns[3] = calculateEuclideanRhythm(
         apvts.getRawParameterValue("Steps 4")->load(),
-        apvts.getRawParameterValue("Beats 4")->load());
+        apvts.getRawParameterValue("Beats 4")->load(),
+        apvts.getRawParameterValue("Offset 4")->load());
 }
 
 void EuclideanRhythmAudioProcessor::releaseResources()
@@ -213,16 +217,20 @@ void EuclideanRhythmAudioProcessor::processBlock (juce::AudioBuffer<float>& buff
     // every time processBlock is called
     patterns[0] = calculateEuclideanRhythm(
         apvts.getRawParameterValue("Steps 1")->load(),
-        apvts.getRawParameterValue("Beats 1")->load());
+        apvts.getRawParameterValue("Beats 1")->load(),
+        apvts.getRawParameterValue("Offset 1")->load());
     patterns[1] = calculateEuclideanRhythm(
         apvts.getRawParameterValue("Steps 2")->load(),
-        apvts.getRawParameterValue("Beats 2")->load());
+        apvts.getRawParameterValue("Beats 2")->load(),
+        apvts.getRawParameterValue("Offset 2")->load());
     patterns[2] = calculateEuclideanRhythm(
         apvts.getRawParameterValue("Steps 3")->load(),
-        apvts.getRawParameterValue("Beats 3")->load());
+        apvts.getRawParameterValue("Beats 3")->load(),
+        apvts.getRawParameterValue("Offset 3")->load());
     patterns[3] = calculateEuclideanRhythm(
         apvts.getRawParameterValue("Steps 4")->load(),
-        apvts.getRawParameterValue("Beats 4")->load());
+        apvts.getRawParameterValue("Beats 4")->load(),
+        apvts.getRawParameterValue("Offset 4")->load());
 
     auto* leftChannel = buffer.getWritePointer(0);
     auto* rightChannel = buffer.getWritePointer(1);
@@ -327,24 +335,34 @@ void EuclideanRhythmAudioProcessor::rhythmTracker(int color, bool toggle)
 
 float EuclideanRhythmAudioProcessor::calculateSample(int color)
 {
-    float currentSample = std::sin(currentAngle[color]);
-    currentAngle[color] += angleDelta[color];
-    currentAngle[color] = (currentAngle[color] >= juce::MathConstants<float>::twoPi) ?
-        currentAngle[color] - juce::MathConstants<float>::twoPi : currentAngle[color];
+    float currentSample = 0;
 
     switch (color)
     {
+    case 0:
+        // Sine Wave
+        currentSample = std::sin(currentAngle[color]);
+        break;
     case 1:
         // Square Wave
-        currentSample = (currentSample >= 0) ? 1.0f : -1.0f;
+        currentSample = std::sin(currentAngle[color]);
+        currentSample = (currentSample >= 0) ? 1.0 : -1.0;
         break;
     case 2:
+        // Sawtooth wave
+        currentSample = std::atan(std::tan(currentAngle[color]));
         break;
     case 3:
+        // Triangle wave
+        currentSample = 2.0 * std::fabs(std::atan(std::tan(currentAngle[color]))) - 1.0;
         break;
     default:
         break;
     }
+
+    currentAngle[color] += angleDelta[color];
+    currentAngle[color] = (currentAngle[color] >= juce::MathConstants<float>::twoPi) ?
+        currentAngle[color] - juce::MathConstants<float>::twoPi : currentAngle[color];
 
     return currentSample;
 }
@@ -397,7 +415,14 @@ juce::AudioProcessorValueTreeState::ParameterLayout
     for (juce::String c : colours)
     {
         auto toggleParam = juce::String(juce::String("Toggle ") + c);
+        auto frequencyParam = juce::String(juce::String("Frequency ") + c);
+        auto volumeParam = juce::String(juce::String("Volume ") + c);
+
         layout.add(std::make_unique<juce::AudioParameterBool>(toggleParam, toggleParam, false));
+        layout.add(std::make_unique<juce::AudioParameterFloat>(frequencyParam, frequencyParam, 
+            juce::NormalisableRange<float>(20.f, 20000.f, 1.f, 1.f), 440.f));
+        layout.add(std::make_unique<juce::AudioParameterFloat>(volumeParam, volumeParam,
+            juce::NormalisableRange<float>(0.f, 1.f, 0.1f), 0.5f));
     }
 
     // TODO (OPTIONAL) : Add velocity/speed parameter to manipulate 
@@ -406,7 +431,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout
     return layout;
 }
 
-std::vector<bool> EuclideanRhythmAudioProcessor::calculateEuclideanRhythm(int steps, int beats)
+std::vector<bool> EuclideanRhythmAudioProcessor::calculateEuclideanRhythm(int steps, int beats, int offset)
 {
     // Buffer Size
     const int bufferSize = 48;
@@ -459,6 +484,11 @@ std::vector<bool> EuclideanRhythmAudioProcessor::calculateEuclideanRhythm(int st
     for (int i = 1; i <= y_amount; i++)
         rhythm += y;
 
+    if (offset != 0)
+    {
+        std::rotate(rhythm.begin(), rhythm.begin() + offset, rhythm.end());
+    }
+
     // Set beat status based on Euclidean rhythm
     for (int i = 0; i < rhythm.length(); ++i)
     {
@@ -470,7 +500,14 @@ std::vector<bool> EuclideanRhythmAudioProcessor::calculateEuclideanRhythm(int st
 
 void EuclideanRhythmAudioProcessor::updateAngleDelta(int color, float frequency)
 {
-    angleDelta[color] = juce::MathConstants<float>::twoPi * (frequency / currentSampleRate);
+    if (color == 0 || color == 1)
+    {
+        angleDelta[color] = juce::MathConstants<float>::twoPi * (frequency / currentSampleRate);
+    }
+    else
+    {
+        angleDelta[color] = juce::MathConstants<float>::pi * (frequency / currentSampleRate);
+    }
 }
 
 float EuclideanRhythmAudioProcessor::getInterval(int color)

@@ -126,7 +126,7 @@ void EuclideanRhythmAudioProcessorEditor::eventHandler(EuclideanRhythmAudioProce
 
                 visualizer.setNumEllipses(static_cast<int>(slider[0]->getValue()),
                     static_cast<int>(slider[1]->getValue()),
-                    i);
+                    i, slider[2]->getValue());
                 visualizer.getNeedle(i)->setSteps(slider[0]->getValue());
                 visualizer.getNeedle(i)->startNeedle(p.getInterval(i));
             };
@@ -137,7 +137,17 @@ void EuclideanRhythmAudioProcessorEditor::eventHandler(EuclideanRhythmAudioProce
 
                 visualizer.setNumEllipses(static_cast<int>(slider[0]->getValue()),
                     static_cast<int>(slider[1]->getValue()),
-                    i);
+                    i, slider[2]->getValue());
+                visualizer.getNeedle(i)->startNeedle(p.getInterval(i));
+            };
+
+        slider[2]->onDragEnd = [this, slider, &p, i]
+            {
+                p.reset(i);
+
+                visualizer.setNumEllipses(static_cast<int>(slider[0]->getValue()),
+                    static_cast<int>(slider[1]->getValue()),
+                    i, slider[2]->getValue());
                 visualizer.getNeedle(i)->startNeedle(p.getInterval(i));
             };
 

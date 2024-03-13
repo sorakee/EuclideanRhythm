@@ -21,6 +21,7 @@ Visualizer::Visualizer(juce::AudioProcessorValueTreeState& apvts)
     ellipses.resize(4);
     numOfEllipses = { 8, 8, 8, 8 };
     numOfBeats = { 8, 8, 8, 8 };
+    offsetVals = { 0, 0, 0, 0 };
     toggle = { false, false, false, false };
     needles = {
         &needleRed,
@@ -100,7 +101,7 @@ void Visualizer::resized()
     for (int color = 0; color < numOfEllipses.size(); ++color)
     {
         createEllipses(color);
-        calculateEuclideanRhythm(numOfEllipses[color], numOfBeats[color], color);
+        calculateEuclideanRhythm(numOfEllipses[color], numOfBeats[color], color, offsetVals[color]);
 
         // Prevents ellipses from disappearing when resizing window
         if (toggle[color] == true) continue;
@@ -155,7 +156,7 @@ void Visualizer::createEllipses(int color)
     }
 }
 
-void Visualizer::calculateEuclideanRhythm(int steps, int beats, int color)
+void Visualizer::calculateEuclideanRhythm(int steps, int beats, int color, int offset)
 {
     // Clear previous beat settings
     for (auto* ellipse : ellipses[color])
@@ -210,6 +211,11 @@ void Visualizer::calculateEuclideanRhythm(int steps, int beats, int color)
         rhythm += x;
     for (int i = 1; i <= y_amount; i++)
         rhythm += y;
+
+    if (offsetVals[color] != 0)
+    {
+        std::rotate(rhythm.begin(), rhythm.begin() + offset, rhythm.end());
+    }
     
     // Set beat status based on Euclidean rhythm
     for (int i = 0; i < rhythm.length(); ++i)
@@ -219,16 +225,17 @@ void Visualizer::calculateEuclideanRhythm(int steps, int beats, int color)
     }  
 }
 
-void Visualizer::setNumEllipses(int newNumEllipses, int newBeats, int color)
+void Visualizer::setNumEllipses(int newNumEllipses, int newBeats, int color, int newOffset)
 {
-    if (newNumEllipses != numOfEllipses[color] || newBeats != numOfBeats[color])
+    if (newNumEllipses != numOfEllipses[color] || newBeats != numOfBeats[color] || newOffset != offsetVals[color])
     {
         numOfEllipses[color] = newNumEllipses;
         numOfBeats[color] = newBeats;
+        offsetVals[color] = newOffset;
         // Reset needle when steps or beats change
         needles[color]->setAngle(-juce::MathConstants<float>::halfPi);
         createEllipses(color);
-        calculateEuclideanRhythm(numOfEllipses[color], numOfBeats[color], color);
+        calculateEuclideanRhythm(numOfEllipses[color], numOfBeats[color], color, offsetVals[color]);
         repaint();
     }
 }

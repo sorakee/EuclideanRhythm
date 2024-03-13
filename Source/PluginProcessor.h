@@ -72,7 +72,7 @@ private:
     float calculateSample(int color);
 
     // Euclidean Algorithm
-    std::vector<bool> calculateEuclideanRhythm (int steps, int beats);
+    std::vector<bool> calculateEuclideanRhythm (int steps, int beats, int offset);
     std::vector<bool> pattern;
     std::vector<std::vector<bool>> patterns;
     std::vector<bool> isSilent, init;

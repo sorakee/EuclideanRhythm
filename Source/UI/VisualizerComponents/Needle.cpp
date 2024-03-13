@@ -91,10 +91,10 @@ void Needle::setSteps(int newSteps)
 
 // Reset needle when steps/beats/offset changes and start with new interval
 void Needle::startNeedle(float interval)
-{
-    prevInterval = interval;
+{   
     startTimer(juce::roundToInt(interval * 1000));
     startTime = juce::Time::currentTimeMillis();
+    prevInterval = interval;
 }
 
 // Reset needle timer using previous interval when user clicks the 'Reset' button
