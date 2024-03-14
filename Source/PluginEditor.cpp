@@ -87,6 +87,8 @@ void EuclideanRhythmAudioProcessorEditor::eventHandler(EuclideanRhythmAudioProce
     * slider[0] - Steps Slider
     * slider[1] - Beats Slider
     * slider[2] - Offset Slider
+    * slider[3] - Frequency Slider
+    * slider[4] - Volume Slider
     */
 
     // TODO: Change this number to 4 when other slider groups are attached to processor

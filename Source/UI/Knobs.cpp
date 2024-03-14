@@ -182,6 +182,8 @@ std::vector<juce::Component*> Knobs::getComponents(int compNum)
             &beatSlider1,
             &offsetLabel1,
             &offsetSlider1,
+            &frequencySlider1,
+            &volumeSlider1
         };
         break;
     case 2:
@@ -193,6 +195,8 @@ std::vector<juce::Component*> Knobs::getComponents(int compNum)
             &beatSlider2,
             &offsetLabel2,
             &offsetSlider2,
+            &frequencySlider2,
+            &volumeSlider2
         };
         break;
     case 3:
@@ -204,6 +208,8 @@ std::vector<juce::Component*> Knobs::getComponents(int compNum)
             &beatSlider3,
             &offsetLabel3,
             &offsetSlider3,
+            &frequencySlider3,
+            &volumeSlider3
         };
         break;
     case 4:
@@ -215,6 +221,8 @@ std::vector<juce::Component*> Knobs::getComponents(int compNum)
             &beatSlider4,
             &offsetLabel4,
             &offsetSlider4,
+            &frequencySlider4,
+            &volumeSlider4
         };
         break;
     }
@@ -233,6 +241,8 @@ std::vector<juce::Slider*> Knobs::getSliders(int compNum)
             &stepSlider1,
             &beatSlider1,
             &offsetSlider1,
+            &frequencySlider1,
+            &volumeSlider1
         };
         break;
     case 2:
@@ -240,6 +250,8 @@ std::vector<juce::Slider*> Knobs::getSliders(int compNum)
             &stepSlider2,
             &beatSlider2,
             &offsetSlider2,
+            &frequencySlider2,
+            &volumeSlider2
         };
         break;
     case 3:
@@ -247,6 +259,8 @@ std::vector<juce::Slider*> Knobs::getSliders(int compNum)
             &stepSlider3,
             &beatSlider3,
             &offsetSlider3,
+            &frequencySlider3,
+            &volumeSlider3
         };
         break;
     case 4:
@@ -254,6 +268,8 @@ std::vector<juce::Slider*> Knobs::getSliders(int compNum)
             &stepSlider4,
             &beatSlider4,
             &offsetSlider4,
+            &frequencySlider4,
+            &volumeSlider4
         };
         break;
     }
@@ -325,6 +341,8 @@ void Knobs::attachSliders(juce::AudioProcessorValueTreeState& apvts, int compNum
         auto beatsParam = juce::String(std::string("Beats ") + std::to_string(i + 1));
         auto offsetParam = juce::String(std::string("Offset ") + std::to_string(i + 1));
         auto toggleParam = juce::String(juce::String("Toggle ") + colours[i]);
+        auto frequencyParam = juce::String(juce::String("Frequency ") + colours[i]);
+        auto volumeParam = juce::String(juce::String("Volume ") + colours[i]);
 
         switch (i + 1)
         {
@@ -349,6 +367,9 @@ void Knobs::attachSliders(juce::AudioProcessorValueTreeState& apvts, int compNum
             offsetLabel1.setColour(juce::Label::textColourId, juce::Colours::black);
             offsetAttach1 = std::make_unique<SliderAttachment>(apvts, offsetParam, offsetSlider1);
 
+            frequencyAttach1 = std::make_unique<SliderAttachment>(apvts, frequencyParam, frequencySlider1);
+            volumeAttach1 = std::make_unique<SliderAttachment>(apvts, volumeParam, volumeSlider1);
+
             break;
         case 2:
             toggleAttach2 = std::make_unique<ButtonAttachment>(apvts, toggleParam, toggleGreen);
@@ -370,6 +391,10 @@ void Knobs::attachSliders(juce::AudioProcessorValueTreeState& apvts, int compNum
             offsetLabel2.setJustificationType(juce::Justification::centredTop);
             offsetLabel2.setColour(juce::Label::textColourId, juce::Colours::black);
             offsetAttach2 = std::make_unique<SliderAttachment>(apvts, offsetParam, offsetSlider2);
+
+            frequencyAttach2 = std::make_unique<SliderAttachment>(apvts, frequencyParam, frequencySlider2);
+            volumeAttach2 = std::make_unique<SliderAttachment>(apvts, volumeParam, volumeSlider2);
+
             break;
         case 3:
             toggleAttach3 = std::make_unique<ButtonAttachment>(apvts, toggleParam, toggleBlue);
@@ -391,6 +416,10 @@ void Knobs::attachSliders(juce::AudioProcessorValueTreeState& apvts, int compNum
             offsetLabel3.setJustificationType(juce::Justification::centredTop);
             offsetLabel3.setColour(juce::Label::textColourId, juce::Colours::black);
             offsetAttach3 = std::make_unique<SliderAttachment>(apvts, offsetParam, offsetSlider3);
+
+            frequencyAttach3 = std::make_unique<SliderAttachment>(apvts, frequencyParam, frequencySlider3);
+            volumeAttach3 = std::make_unique<SliderAttachment>(apvts, volumeParam, volumeSlider3);
+
             break;
         case 4:
             toggleAttach4 = std::make_unique<ButtonAttachment>(apvts, toggleParam, toggleYellow);
@@ -412,6 +441,10 @@ void Knobs::attachSliders(juce::AudioProcessorValueTreeState& apvts, int compNum
             offsetLabel4.setJustificationType(juce::Justification::centredTop);
             offsetLabel4.setColour(juce::Label::textColourId, juce::Colours::black);
             offsetAttach4 = std::make_unique<SliderAttachment>(apvts, offsetParam, offsetSlider4);
+
+            frequencyAttach4 = std::make_unique<SliderAttachment>(apvts, frequencyParam, frequencySlider4);
+            volumeAttach4 = std::make_unique<SliderAttachment>(apvts, volumeParam, volumeSlider4);
+
             break;
         }
     }
@@ -473,61 +506,5 @@ void Knobs::toggleSliders()
 
                 slider->setEnabled(false);
             }
-        };
-}
-
-void Knobs::changeLimit()
-{
-    // TODO
-
-    stepSlider1.onValueChange = [this]() 
-        {
-            if (beatSlider1.getValue() > stepSlider1.getValue())
-            {
-                beatSlider1.setValue(stepSlider1.getValue());
-            }
-
-            if (offsetSlider1.getValue() > stepSlider1.getValue())
-            {
-                offsetSlider1.setValue(stepSlider1.getValue());
-            }
-
-            auto beatRange = beatSlider1.getRange();
-            auto sliderRange = offsetSlider1.getRange();
-            beatSlider1.setRange(0, stepSlider1.getValue(), 1);
-            offsetSlider1.setRange(0, stepSlider1.getValue(), 1);
-
-            beatSlider1.repaint();
-            offsetSlider1.repaint();
-        };
-
-    stepSlider2.onDragEnd = [this]()
-        {
-            auto beatRange = beatSlider2.getRange();
-            auto sliderRange = offsetSlider2.getRange();
-            beatSlider2.setRange(0, stepSlider2.getValue(), 1);
-            offsetSlider2.setRange(0, stepSlider2.getValue(), 1);
-            beatSlider2.repaint();
-            offsetSlider2.repaint();
-        };
-
-    stepSlider3.onDragEnd = [this]()
-        {
-            auto beatRange = beatSlider3.getRange();
-            auto sliderRange = offsetSlider3.getRange();
-            beatSlider3.setRange(0, stepSlider3.getValue(), 1);
-            offsetSlider3.setRange(0, stepSlider3.getValue(), 1);
-            beatSlider3.repaint();
-            offsetSlider3.repaint();
-        };
-
-    stepSlider4.onDragEnd = [this]()
-        {
-            auto beatRange = beatSlider4.getRange();
-            auto sliderRange = offsetSlider4.getRange();
-            beatSlider4.setRange(0, stepSlider4.getValue(), 1);
-            offsetSlider4.setRange(0, stepSlider4.getValue(), 1);
-            beatSlider4.repaint();
-            offsetSlider4.repaint();
         };
 }
