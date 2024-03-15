@@ -105,10 +105,12 @@ void Knobs::resized()
     // Top-Left Button
     auto btnUpperLeftArea = knobsUpperLeftArea
         .removeFromBottom(knobsUpperLeftArea.getWidth() * 0.225);
-    volumeSlider1.setBounds(btnUpperLeftArea.removeFromLeft(btnUpperLeftArea.getWidth() * 0.5));
+    volumeSlider1.setBounds(btnUpperLeftArea.removeFromLeft(btnUpperLeftArea.getWidth() * 0.3));
     volumeSlider1.setTextBoxStyle(juce::Slider::TextBoxRight, true, 0, 0);
-    frequencySlider1.setBounds(btnUpperLeftArea);
+    frequencySlider1.setBounds(btnUpperLeftArea.removeFromLeft(btnUpperLeftArea.getWidth() * 0.5));
     frequencySlider1.setTextBoxStyle(juce::Slider::TextBoxRight, true, 0, 0);
+    speedSlider1.setBounds(btnUpperLeftArea);
+    speedSlider1.setTextBoxStyle(juce::Slider::TextBoxRight, true, 0, 0);
 
     // Top-Left Toggle
     auto toggleUpperLeftArea = knobsUpperLeftArea
@@ -141,10 +143,12 @@ void Knobs::resized()
     // Top-right Button
     auto btnUpperRightArea = knobsUpperArea
         .removeFromBottom(knobsUpperArea.getWidth() * 0.225);
-    volumeSlider2.setBounds(btnUpperRightArea.removeFromLeft(btnUpperRightArea.getWidth() * 0.5));
+    volumeSlider2.setBounds(btnUpperRightArea.removeFromLeft(btnUpperRightArea.getWidth() * 0.3));
     volumeSlider2.setTextBoxStyle(juce::Slider::TextBoxRight, true, 0, 0);
-    frequencySlider2.setBounds(btnUpperRightArea);
+    frequencySlider2.setBounds(btnUpperRightArea.removeFromLeft(btnUpperRightArea.getWidth() * 0.5));
     frequencySlider2.setTextBoxStyle(juce::Slider::TextBoxRight, true, 0, 0);
+    speedSlider2.setBounds(btnUpperRightArea);
+    speedSlider2.setTextBoxStyle(juce::Slider::TextBoxRight, true, 0, 0);
 
     // Top-right Toggle
     auto toggleUpperRightArea = knobsUpperArea
@@ -168,10 +172,12 @@ void Knobs::resized()
     // Bottom-left Button
     auto btnBottomLeftArea = knobsBottomLeftArea
         .removeFromBottom(knobsBottomLeftArea.getWidth() * 0.225);
-    volumeSlider3.setBounds(btnBottomLeftArea.removeFromLeft(btnBottomLeftArea.getWidth() * 0.5));
+    volumeSlider3.setBounds(btnBottomLeftArea.removeFromLeft(btnBottomLeftArea.getWidth() * 0.3));
     volumeSlider3.setTextBoxStyle(juce::Slider::TextBoxRight, true, 0, 0);
-    frequencySlider3.setBounds(btnBottomLeftArea);
+    frequencySlider3.setBounds(btnBottomLeftArea.removeFromLeft(btnBottomLeftArea.getWidth() * 0.5));
     frequencySlider3.setTextBoxStyle(juce::Slider::TextBoxRight, true, 0, 0);
+    speedSlider3.setBounds(btnBottomLeftArea);
+    speedSlider3.setTextBoxStyle(juce::Slider::TextBoxRight, true, 0, 0);
 
     // Bottom-left Toggle
     auto toggleBottomLeftArea = knobsBottomLeftArea
@@ -195,10 +201,12 @@ void Knobs::resized()
     // Bottom-right Button
     auto btnBottomRightArea = area
         .removeFromBottom(area.getWidth() * 0.225);
-    volumeSlider4.setBounds(btnBottomRightArea.removeFromLeft(btnBottomRightArea.getWidth() * 0.5));
+    volumeSlider4.setBounds(btnBottomRightArea.removeFromLeft(btnBottomRightArea.getWidth() * 0.3));
     volumeSlider4.setTextBoxStyle(juce::Slider::TextBoxRight, true, 0, 0);
-    frequencySlider4.setBounds(btnBottomRightArea);
+    frequencySlider4.setBounds(btnBottomRightArea.removeFromLeft(btnBottomRightArea.getWidth() * 0.5));
     frequencySlider4.setTextBoxStyle(juce::Slider::TextBoxRight, true, 0, 0);
+    speedSlider4.setBounds(btnBottomRightArea);
+    speedSlider4.setTextBoxStyle(juce::Slider::TextBoxRight, true, 0, 0);
 
     // Bottom-right Toggle
     auto toggleBottomRightArea = area
@@ -241,7 +249,8 @@ std::vector<juce::Component*> Knobs::getComponents(int compNum)
             &offsetLabel1,
             &offsetSlider1,
             &frequencySlider1,
-            &volumeSlider1
+            &volumeSlider1,
+            &speedSlider1
         };
         break;
     case 2:
@@ -254,7 +263,8 @@ std::vector<juce::Component*> Knobs::getComponents(int compNum)
             &offsetLabel2,
             &offsetSlider2,
             &frequencySlider2,
-            &volumeSlider2
+            &volumeSlider2,
+            &speedSlider2
         };
         break;
     case 3:
@@ -267,7 +277,8 @@ std::vector<juce::Component*> Knobs::getComponents(int compNum)
             &offsetLabel3,
             &offsetSlider3,
             &frequencySlider3,
-            &volumeSlider3
+            &volumeSlider3,
+            &speedSlider3
         };
         break;
     case 4:
@@ -280,7 +291,8 @@ std::vector<juce::Component*> Knobs::getComponents(int compNum)
             &offsetLabel4,
             &offsetSlider4,
             &frequencySlider4,
-            &volumeSlider4
+            &volumeSlider4,
+            &speedSlider4
         };
         break;
     }
@@ -300,7 +312,8 @@ std::vector<juce::Slider*> Knobs::getSliders(int compNum)
             &beatSlider1,
             &offsetSlider1,
             &frequencySlider1,
-            &volumeSlider1
+            &volumeSlider1,
+            &speedSlider1
         };
         break;
     case 2:
@@ -309,7 +322,8 @@ std::vector<juce::Slider*> Knobs::getSliders(int compNum)
             &beatSlider2,
             &offsetSlider2,
             &frequencySlider2,
-            &volumeSlider2
+            &volumeSlider2,
+            &speedSlider2
         };
         break;
     case 3:
@@ -318,7 +332,8 @@ std::vector<juce::Slider*> Knobs::getSliders(int compNum)
             &beatSlider3,
             &offsetSlider3,
             &frequencySlider3,
-            &volumeSlider3
+            &volumeSlider3,
+            &speedSlider3
         };
         break;
     case 4:
@@ -327,7 +342,8 @@ std::vector<juce::Slider*> Knobs::getSliders(int compNum)
             &beatSlider4,
             &offsetSlider4,
             &frequencySlider4,
-            &volumeSlider4
+            &volumeSlider4,
+            &speedSlider4
         };
         break;
     }
@@ -401,6 +417,7 @@ void Knobs::attachSliders(juce::AudioProcessorValueTreeState& apvts, int compNum
         auto toggleParam = juce::String(juce::String("Toggle ") + colours[i]);
         auto frequencyParam = juce::String(juce::String("Frequency ") + colours[i]);
         auto volumeParam = juce::String(juce::String("Volume ") + colours[i]);
+        auto speedParam = juce::String(juce::String("Speed ") + colours[i]);
 
         switch (i + 1)
         {
@@ -427,6 +444,7 @@ void Knobs::attachSliders(juce::AudioProcessorValueTreeState& apvts, int compNum
 
             frequencyAttach1 = std::make_unique<SliderAttachment>(apvts, frequencyParam, frequencySlider1);
             volumeAttach1 = std::make_unique<SliderAttachment>(apvts, volumeParam, volumeSlider1);
+            speedAttach1 = std::make_unique<SliderAttachment>(apvts, speedParam, speedSlider1);
 
             break;
         case 2:
@@ -452,6 +470,7 @@ void Knobs::attachSliders(juce::AudioProcessorValueTreeState& apvts, int compNum
 
             frequencyAttach2 = std::make_unique<SliderAttachment>(apvts, frequencyParam, frequencySlider2);
             volumeAttach2 = std::make_unique<SliderAttachment>(apvts, volumeParam, volumeSlider2);
+            speedAttach2 = std::make_unique<SliderAttachment>(apvts, speedParam, speedSlider2);
 
             break;
         case 3:
@@ -477,6 +496,7 @@ void Knobs::attachSliders(juce::AudioProcessorValueTreeState& apvts, int compNum
 
             frequencyAttach3 = std::make_unique<SliderAttachment>(apvts, frequencyParam, frequencySlider3);
             volumeAttach3 = std::make_unique<SliderAttachment>(apvts, volumeParam, volumeSlider3);
+            speedAttach3 = std::make_unique<SliderAttachment>(apvts, speedParam, speedSlider3);
 
             break;
         case 4:
@@ -502,6 +522,7 @@ void Knobs::attachSliders(juce::AudioProcessorValueTreeState& apvts, int compNum
 
             frequencyAttach4 = std::make_unique<SliderAttachment>(apvts, frequencyParam, frequencySlider4);
             volumeAttach4 = std::make_unique<SliderAttachment>(apvts, volumeParam, volumeSlider4);
+            speedAttach4 = std::make_unique<SliderAttachment>(apvts, speedParam, speedSlider4);
 
             break;
         }

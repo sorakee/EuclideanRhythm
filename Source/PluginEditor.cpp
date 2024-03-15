@@ -117,6 +117,7 @@ void EuclideanRhythmAudioProcessorEditor::eventHandler(EuclideanRhythmAudioProce
     * slider[2] - Offset Slider
     * slider[3] - Frequency Slider
     * slider[4] - Volume Slider
+    * slider[5] - Speed Slider
     */
 
     // TODO: Change this number to 4 when other slider groups are attached to processor
@@ -176,6 +177,15 @@ void EuclideanRhythmAudioProcessorEditor::eventHandler(EuclideanRhythmAudioProce
                 visualizer.setNumEllipses(static_cast<int>(slider[0]->getValue()),
                     static_cast<int>(slider[1]->getValue()),
                     i, slider[2]->getValue());
+                visualizer.getNeedle(i)->startNeedle(p.getInterval(i));
+            };
+
+        slider[5]->onDragEnd = [this, slider, &p, i]
+            {
+                p.reset(i);
+                p.setInit(i, true);
+
+                visualizer.getNeedle(i)->stopNeedle();
                 visualizer.getNeedle(i)->startNeedle(p.getInterval(i));
             };
 

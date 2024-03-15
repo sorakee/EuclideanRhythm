@@ -35,16 +35,16 @@ private:
 
 	// Red Knobs
 	RedSlider stepSlider1, beatSlider1, offsetSlider1;
-	RedSlider frequencySlider1, volumeSlider1;
+	RedSlider frequencySlider1, volumeSlider1, speedSlider1;
 	// Green Knobs
 	GreenSlider stepSlider2, beatSlider2, offsetSlider2; 
-	GreenSlider frequencySlider2, volumeSlider2;
+	GreenSlider frequencySlider2, volumeSlider2, speedSlider2;
 	// Blue Knobs
 	BlueSlider stepSlider3, beatSlider3, offsetSlider3; 
-	BlueSlider frequencySlider3, volumeSlider3;
+	BlueSlider frequencySlider3, volumeSlider3, speedSlider3;
 	// Yellow Knows
 	YellowSlider stepSlider4, beatSlider4, offsetSlider4; 
-	YellowSlider frequencySlider4, volumeSlider4;
+	YellowSlider frequencySlider4, volumeSlider4, speedSlider4;
 
 	Toggle toggleRed, toggleGreen, toggleBlue, toggleYellow;
 
@@ -60,6 +60,8 @@ private:
 	std::unique_ptr<SliderAttachment> frequencyAttach3, frequencyAttach4;
 	std::unique_ptr<SliderAttachment> volumeAttach1, volumeAttach2;
 	std::unique_ptr<SliderAttachment> volumeAttach3, volumeAttach4;
+	std::unique_ptr<SliderAttachment> speedAttach1, speedAttach2;
+	std::unique_ptr<SliderAttachment> speedAttach3, speedAttach4;
 	std::unique_ptr<ButtonAttachment> toggleAttach1, toggleAttach2, toggleAttach3, toggleAttach4;
 
 	std::vector<juce::Component*> getComponents(int compNum);

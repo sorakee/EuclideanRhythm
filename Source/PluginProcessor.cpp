@@ -201,10 +201,10 @@ void EuclideanRhythmAudioProcessor::processBlock (juce::AudioBuffer<float>& buff
     bool isBlueOn = ((int)apvts.getRawParameterValue("Toggle Blue")->load() == 1) ? true : false;
     bool isYellowOn = ((int)apvts.getRawParameterValue("Toggle Yellow")->load() == 1) ? true : false;
 
-    // TODO: Add speed parameter
     for (int i = 0; i < 4; ++i)
     {
-        interval[i] = 60.0 / currentBPM * currentSampleRate;
+        std::vector<juce::String> s = {"Speed Red", "Speed Green", "Speed Blue", "Speed Yellow"};
+        interval[i] = 60.0 / (currentBPM * apvts.getRawParameterValue(s[i])->load()) * currentSampleRate;
         initInterval(buffer, i);
     }
 
@@ -427,12 +427,15 @@ juce::AudioProcessorValueTreeState::ParameterLayout
         auto toggleParam = juce::String(juce::String("Toggle ") + c);
         auto frequencyParam = juce::String(juce::String("Frequency ") + c);
         auto volumeParam = juce::String(juce::String("Volume ") + c);
+        auto speedParam = juce::String(juce::String("Speed ") + c);
 
         layout.add(std::make_unique<juce::AudioParameterBool>(toggleParam, toggleParam, false));
         layout.add(std::make_unique<juce::AudioParameterFloat>(frequencyParam, frequencyParam, 
             juce::NormalisableRange<float>(100.f, 5000.f, 1.f, 0.5f), 440.f));
         layout.add(std::make_unique<juce::AudioParameterFloat>(volumeParam, volumeParam,
             juce::NormalisableRange<float>(0.f, 1.f, 0.01f), 0.5f));
+        layout.add(std::make_unique<juce::AudioParameterFloat>(speedParam, speedParam,
+            juce::NormalisableRange<float>(0.f, 2.f, 0.1f), 1.f));
     }
 
     // TODO (OPTIONAL) : Add velocity/speed parameter to manipulate 
