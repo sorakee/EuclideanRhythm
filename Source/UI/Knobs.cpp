@@ -26,6 +26,8 @@ Knobs::Knobs(juce::AudioProcessorValueTreeState& apvts)
 
     // Ensure beat and offset values does not exceed step value
     // changeLimit();
+
+    darkMode = false;
 }
 
 Knobs::~Knobs()
@@ -34,7 +36,39 @@ Knobs::~Knobs()
 
 void Knobs::paint (juce::Graphics& g)
 {
-    g.fillAll(juce::Colours::lightgrey);
+    if (darkMode == false)
+    {
+        g.fillAll(juce::Colours::lightgrey);
+        stepLabel1.setColour(juce::Label::textColourId, juce::Colours::black);
+        beatLabel1.setColour(juce::Label::textColourId, juce::Colours::black);
+        offsetLabel1.setColour(juce::Label::textColourId, juce::Colours::black);
+        stepLabel2.setColour(juce::Label::textColourId, juce::Colours::black);
+        beatLabel2.setColour(juce::Label::textColourId, juce::Colours::black);
+        offsetLabel2.setColour(juce::Label::textColourId, juce::Colours::black);
+        stepLabel3.setColour(juce::Label::textColourId, juce::Colours::black);
+        beatLabel3.setColour(juce::Label::textColourId, juce::Colours::black);
+        offsetLabel3.setColour(juce::Label::textColourId, juce::Colours::black);
+        stepLabel4.setColour(juce::Label::textColourId, juce::Colours::black);
+        beatLabel4.setColour(juce::Label::textColourId, juce::Colours::black);
+        offsetLabel4.setColour(juce::Label::textColourId, juce::Colours::black);
+    }
+    else
+    {
+        g.fillAll(juce::Colour(0.f, 0.f, 60.f / 255.f, 1.f));
+        stepLabel1.setColour(juce::Label::textColourId, juce::Colours::white);
+        beatLabel1.setColour(juce::Label::textColourId, juce::Colours::white);
+        offsetLabel1.setColour(juce::Label::textColourId, juce::Colours::white);
+        stepLabel2.setColour(juce::Label::textColourId, juce::Colours::white);
+        beatLabel2.setColour(juce::Label::textColourId, juce::Colours::white);
+        offsetLabel2.setColour(juce::Label::textColourId, juce::Colours::white);
+        stepLabel3.setColour(juce::Label::textColourId, juce::Colours::white);
+        beatLabel3.setColour(juce::Label::textColourId, juce::Colours::white);
+        offsetLabel3.setColour(juce::Label::textColourId, juce::Colours::white);
+        stepLabel4.setColour(juce::Label::textColourId, juce::Colours::white);
+        beatLabel4.setColour(juce::Label::textColourId, juce::Colours::white);
+        offsetLabel4.setColour(juce::Label::textColourId, juce::Colours::white);
+    }
+    
     auto area = getLocalBounds();
     // Reserve remaining knobs area for upper area knobs
     auto knobsUpperArea = area.removeFromTop(area.getHeight() * 0.5);
@@ -54,7 +88,6 @@ void Knobs::paint (juce::Graphics& g)
     g.drawRect(knobsUpperArea, 2.5f);
     g.drawRect(knobsBottomLeftBorder, 2.5f);
     g.drawRect(area, 2.5f);
-
 }
 
 void Knobs::resized()
@@ -71,7 +104,12 @@ void Knobs::resized()
 
     // Top-Left Button
     auto btnUpperLeftArea = knobsUpperLeftArea
-        .removeFromBottom(knobsUpperLeftArea.getWidth() * 0.2);
+        .removeFromBottom(knobsUpperLeftArea.getWidth() * 0.225);
+    volumeSlider1.setBounds(btnUpperLeftArea.removeFromLeft(btnUpperLeftArea.getWidth() * 0.5));
+    volumeSlider1.setTextBoxStyle(juce::Slider::TextBoxRight, true, 0, 0);
+    frequencySlider1.setBounds(btnUpperLeftArea);
+    frequencySlider1.setTextBoxStyle(juce::Slider::TextBoxRight, true, 0, 0);
+
     // Top-Left Toggle
     auto toggleUpperLeftArea = knobsUpperLeftArea
         .removeFromTop(knobsUpperLeftArea.getWidth() * 0.1);
@@ -102,7 +140,12 @@ void Knobs::resized()
 
     // Top-right Button
     auto btnUpperRightArea = knobsUpperArea
-        .removeFromBottom(knobsUpperArea.getWidth() * 0.2);
+        .removeFromBottom(knobsUpperArea.getWidth() * 0.225);
+    volumeSlider2.setBounds(btnUpperRightArea.removeFromLeft(btnUpperRightArea.getWidth() * 0.5));
+    volumeSlider2.setTextBoxStyle(juce::Slider::TextBoxRight, true, 0, 0);
+    frequencySlider2.setBounds(btnUpperRightArea);
+    frequencySlider2.setTextBoxStyle(juce::Slider::TextBoxRight, true, 0, 0);
+
     // Top-right Toggle
     auto toggleUpperRightArea = knobsUpperArea
         .removeFromTop(knobsUpperArea.getWidth() * 0.1);
@@ -124,7 +167,12 @@ void Knobs::resized()
 
     // Bottom-left Button
     auto btnBottomLeftArea = knobsBottomLeftArea
-        .removeFromBottom(knobsBottomLeftArea.getWidth() * 0.2);
+        .removeFromBottom(knobsBottomLeftArea.getWidth() * 0.225);
+    volumeSlider3.setBounds(btnBottomLeftArea.removeFromLeft(btnBottomLeftArea.getWidth() * 0.5));
+    volumeSlider3.setTextBoxStyle(juce::Slider::TextBoxRight, true, 0, 0);
+    frequencySlider3.setBounds(btnBottomLeftArea);
+    frequencySlider3.setTextBoxStyle(juce::Slider::TextBoxRight, true, 0, 0);
+
     // Bottom-left Toggle
     auto toggleBottomLeftArea = knobsBottomLeftArea
         .removeFromTop(knobsBottomLeftArea.getWidth() * 0.1);
@@ -146,7 +194,12 @@ void Knobs::resized()
 
     // Bottom-right Button
     auto btnBottomRightArea = area
-        .removeFromBottom(area.getWidth() * 0.2);
+        .removeFromBottom(area.getWidth() * 0.225);
+    volumeSlider4.setBounds(btnBottomRightArea.removeFromLeft(btnBottomRightArea.getWidth() * 0.5));
+    volumeSlider4.setTextBoxStyle(juce::Slider::TextBoxRight, true, 0, 0);
+    frequencySlider4.setBounds(btnBottomRightArea);
+    frequencySlider4.setTextBoxStyle(juce::Slider::TextBoxRight, true, 0, 0);
+
     // Bottom-right Toggle
     auto toggleBottomRightArea = area
         .removeFromTop(area.getWidth() * 0.1);
@@ -165,6 +218,11 @@ void Knobs::resized()
     stepLabel4.setFont(font);
     beatLabel4.setFont(font);
     offsetLabel4.setFont(font);
+}
+
+void Knobs::setDark(bool dark)
+{
+    darkMode = dark;
 }
 
 std::vector<juce::Component*> Knobs::getComponents(int compNum)

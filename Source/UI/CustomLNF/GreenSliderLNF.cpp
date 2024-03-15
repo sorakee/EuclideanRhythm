@@ -54,14 +54,16 @@ void GreenSliderLNF::drawRotarySlider(juce::Graphics& g, int x, int y, int width
     font.setHeight(slider.proportionOfWidth(0.225f));
     g.setFont(font);
 
-    // Text Background
-    g.setColour(juce::Colours::black);
-    textArea.setSize(2 * radius * 0.9f, font.getHeight() + 0.5f);
-    textArea.setCentre(centreX, centreY);
-    textArea.setY(centreY * 1.705f);
-    g.fillRoundedRectangle(textArea, radius * 0.25f);
+    if (slider.getTextBoxPosition() == juce::Slider::NoTextBox)
+    {
+        g.setColour(juce::Colours::black);
+        textArea.setSize(2 * radius * 0.9f, font.getHeight() + 0.5f);
+        textArea.setCentre(centreX, centreY);
+        textArea.setY(centreY * 1.705f);
+        g.fillRoundedRectangle(textArea, radius * 0.25f);
 
-    // Text
-    g.setColour(juce::Colours::white);
-    g.drawFittedText(text, slider.getLocalBounds(), juce::Justification::centredBottom, 1);
+        // Text
+        g.setColour(juce::Colours::white);
+        g.drawFittedText(text, slider.getLocalBounds(), juce::Justification::centredBottom, 1);
+    }
 }

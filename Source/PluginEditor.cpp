@@ -20,10 +20,37 @@ EuclideanRhythmAudioProcessorEditor::EuclideanRhythmAudioProcessorEditor (Euclid
 {
     // Placeholder
     reset.setColour(juce::TextButton::buttonColourId,
-        juce::Colours::cornflowerblue);
+        juce::Colours::black);
     reset.setButtonText("Reset");
 
+    darkMode.setColour(juce::TextButton::buttonColourId,
+        juce::Colours::whitesmoke);
+    darkMode.setColour(juce::TextButton::textColourOffId,
+        juce::Colours::black);
+    darkMode.setButtonText("Dark Mode");
+    darkMode.setToggleable(true);
+    darkMode.setClickingTogglesState(true);
+
+    darkMode.onClick = [this]
+        {
+            if (darkMode.getToggleState())
+            {
+                knobs.setDark(true);
+                knobs.repaint();
+                darkMode.setColour(darkMode.buttonOnColourId, juce::Colours::darkgrey);
+                darkMode.setColour(darkMode.textColourOnId, juce::Colours::white);
+                darkMode.setButtonText("Light Mode");
+            }
+            else
+            {
+                knobs.setDark(false);
+                knobs.repaint();
+                darkMode.setButtonText("Dark Mode");
+            }
+        };
+
     addAndMakeVisible(reset);
+    addAndMakeVisible(darkMode);
     addAndMakeVisible(visualizer);
     addAndMakeVisible(knobs);
 
@@ -76,7 +103,8 @@ void EuclideanRhythmAudioProcessorEditor::resized()
     knobs.setBounds(controlArea.removeFromTop(controlArea.getHeight() * 0.8));
 
     // Reserve bottom control area for misc buttons
-    reset.setBounds(controlArea);
+    reset.setBounds(controlArea.removeFromLeft(controlArea.getWidth() * 0.5));
+    darkMode.setBounds(controlArea);
 }
 
 void EuclideanRhythmAudioProcessorEditor::eventHandler(EuclideanRhythmAudioProcessor& p)

@@ -35,6 +35,7 @@ private:
     Knobs knobs;
     Visualizer visualizer;
     juce::TextButton reset;
+    juce::TextButton darkMode;
 
     void eventHandler(EuclideanRhythmAudioProcessor&);
 

@@ -122,10 +122,10 @@ void EuclideanRhythmAudioProcessor::prepareToPlay (double sampleRate, int sample
     currentSampleRate = sampleRate;
 
     // TODO : Frequency modulation
-    updateAngleDelta(0, 440.0f);
-    updateAngleDelta(1, 440.0f);
-    updateAngleDelta(2, 440.0f);
-    updateAngleDelta(3, 440.0f);
+    updateAngleDelta(0, apvts.getRawParameterValue("Frequency Red")->load());
+    updateAngleDelta(1, apvts.getRawParameterValue("Frequency Green")->load());
+    updateAngleDelta(2, apvts.getRawParameterValue("Frequency Blue")->load());
+    updateAngleDelta(3, apvts.getRawParameterValue("Frequency Yellow")->load());
 
     patterns[0] = calculateEuclideanRhythm(
         apvts.getRawParameterValue("Steps 1")->load(),
@@ -183,6 +183,11 @@ void EuclideanRhythmAudioProcessor::processBlock (juce::AudioBuffer<float>& buff
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
 
+    updateAngleDelta(0, apvts.getRawParameterValue("Frequency Red")->load());
+    updateAngleDelta(1, apvts.getRawParameterValue("Frequency Green")->load());
+    updateAngleDelta(2, apvts.getRawParameterValue("Frequency Blue")->load());
+    updateAngleDelta(3, apvts.getRawParameterValue("Frequency Yellow")->load());
+
     // Retrieve BPM information from host, else defaults to specified BPM
     juce::Optional<double> positionBPM;
     positionBPM = (getPlayHead()) ? getPlayHead()->getPosition()->getBpm() : positionBPM;
@@ -238,10 +243,10 @@ void EuclideanRhythmAudioProcessor::processBlock (juce::AudioBuffer<float>& buff
     for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
     {
         // TODO : Add volume param
-        float redSample = (isSilent[0] || !isRedOn) ? 0.0f : 0.25f * calculateSample(0);
-        float greenSample = (isSilent[1] || !isGreenOn) ? 0.0f : 0.125f * calculateSample(1);
-        float blueSample = (isSilent[2] || !isBlueOn) ? 0.0f : 0.125f * calculateSample(2);
-        float yellowSample = (isSilent[3] || !isYellowOn) ? 0.0f : 0.125f * calculateSample(3);
+        float redSample = (isSilent[0] || !isRedOn) ? 0.0f : apvts.getRawParameterValue("Volume Red")->load() * calculateSample(0);
+        float greenSample = (isSilent[1] || !isGreenOn) ? 0.0f : apvts.getRawParameterValue("Volume Green")->load() * calculateSample(1);
+        float blueSample = (isSilent[2] || !isBlueOn) ? 0.0f : apvts.getRawParameterValue("Volume Blue")->load() * calculateSample(2);
+        float yellowSample = (isSilent[3] || !isYellowOn) ? 0.0f : apvts.getRawParameterValue("Volume Yellow")->load() * calculateSample(3);
 
         // Output sound wave to the left and right channel buffer
         leftChannel[sample] = redSample + greenSample + blueSample + yellowSample;
@@ -367,6 +372,11 @@ float EuclideanRhythmAudioProcessor::calculateSample(int color)
     return currentSample;
 }
 
+void EuclideanRhythmAudioProcessor::setInit(int color, bool initStatus)
+{
+    init[color] = initStatus;
+}
+
 //==============================================================================
 bool EuclideanRhythmAudioProcessor::hasEditor() const
 {
@@ -420,9 +430,9 @@ juce::AudioProcessorValueTreeState::ParameterLayout
 
         layout.add(std::make_unique<juce::AudioParameterBool>(toggleParam, toggleParam, false));
         layout.add(std::make_unique<juce::AudioParameterFloat>(frequencyParam, frequencyParam, 
-            juce::NormalisableRange<float>(20.f, 20000.f, 1.f, 1.f), 440.f));
+            juce::NormalisableRange<float>(100.f, 5000.f, 1.f, 0.5f), 440.f));
         layout.add(std::make_unique<juce::AudioParameterFloat>(volumeParam, volumeParam,
-            juce::NormalisableRange<float>(0.f, 1.f, 0.1f), 0.5f));
+            juce::NormalisableRange<float>(0.f, 1.f, 0.01f), 0.5f));
     }
 
     // TODO (OPTIONAL) : Add velocity/speed parameter to manipulate 
@@ -491,7 +501,7 @@ std::vector<bool> EuclideanRhythmAudioProcessor::calculateEuclideanRhythm(int st
         std::rotate(rhythm.begin(), rhythm.begin() + offsetMod, rhythm.end());
     }
 
-    // Set beat status based on Euclidean rhythm
+    // Set beat status based on the generated Euclidean rhythm
     for (int i = 0; i < rhythm.length(); ++i)
     {
         pattern[i] = (rhythm[i] == '1') ? true : false;

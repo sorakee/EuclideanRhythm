@@ -26,6 +26,7 @@ public:
 
 	juce::ShapeButton* getToggle(int compNum);
 	std::vector<juce::Slider*> getSliders(int compNum);
+	void setDark(bool dark);
 	
 private:
 
@@ -62,6 +63,8 @@ private:
 	std::unique_ptr<ButtonAttachment> toggleAttach1, toggleAttach2, toggleAttach3, toggleAttach4;
 
 	std::vector<juce::Component*> getComponents(int compNum);
+
+	bool darkMode;
 	
 	void initComponents();
 	void initLimit();

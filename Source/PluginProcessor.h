@@ -58,6 +58,7 @@ public:
 
     //==============================================================================
     float getInterval(int color);
+    void setInit(int color, bool initStatus);
     void reset(int color);
 
 private:
@@ -79,7 +80,7 @@ private:
     std::vector<int> sampleCount, patternTrack, count, interval, actualInterval;
     std::vector<float> currentAngle, angleDelta;
 
-    float currentSampleRate, BPS;
+    float currentSampleRate, BPS, fadeFactor, fadeStep;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EuclideanRhythmAudioProcessor)
