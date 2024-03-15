@@ -55,18 +55,18 @@ void Knobs::paint (juce::Graphics& g)
     else
     {
         g.fillAll(juce::Colour(0.f, 0.f, 60.f / 255.f, 1.f));
-        stepLabel1.setColour(juce::Label::textColourId, juce::Colours::white);
-        beatLabel1.setColour(juce::Label::textColourId, juce::Colours::white);
-        offsetLabel1.setColour(juce::Label::textColourId, juce::Colours::white);
-        stepLabel2.setColour(juce::Label::textColourId, juce::Colours::white);
-        beatLabel2.setColour(juce::Label::textColourId, juce::Colours::white);
-        offsetLabel2.setColour(juce::Label::textColourId, juce::Colours::white);
-        stepLabel3.setColour(juce::Label::textColourId, juce::Colours::white);
-        beatLabel3.setColour(juce::Label::textColourId, juce::Colours::white);
-        offsetLabel3.setColour(juce::Label::textColourId, juce::Colours::white);
-        stepLabel4.setColour(juce::Label::textColourId, juce::Colours::white);
-        beatLabel4.setColour(juce::Label::textColourId, juce::Colours::white);
-        offsetLabel4.setColour(juce::Label::textColourId, juce::Colours::white);
+        stepLabel1.setColour(juce::Label::textColourId, juce::Colour(0.f, 0.f, 230.f / 255.f, 1.f));
+        beatLabel1.setColour(juce::Label::textColourId, juce::Colour(0.f, 0.f, 230.f / 255.f, 1.f));
+        offsetLabel1.setColour(juce::Label::textColourId, juce::Colour(0.f, 0.f, 230.f / 255.f, 1.f));
+        stepLabel2.setColour(juce::Label::textColourId, juce::Colour(0.f, 0.f, 230.f / 255.f, 1.f));
+        beatLabel2.setColour(juce::Label::textColourId, juce::Colour(0.f, 0.f, 230.f / 255.f, 1.f));
+        offsetLabel2.setColour(juce::Label::textColourId, juce::Colour(0.f, 0.f, 230.f / 255.f, 1.f));
+        stepLabel3.setColour(juce::Label::textColourId, juce::Colour(0.f, 0.f, 230.f / 255.f, 1.f));
+        beatLabel3.setColour(juce::Label::textColourId, juce::Colour(0.f, 0.f, 230.f / 255.f, 1.f));
+        offsetLabel3.setColour(juce::Label::textColourId, juce::Colour(0.f, 0.f, 230.f / 255.f, 1.f));
+        stepLabel4.setColour(juce::Label::textColourId, juce::Colour(0.f, 0.f, 230.f / 255.f, 1.f));
+        beatLabel4.setColour(juce::Label::textColourId, juce::Colour(0.f, 0.f, 230.f / 255.f, 1.f));
+        offsetLabel4.setColour(juce::Label::textColourId, juce::Colour(0.f, 0.f, 230.f / 255.f, 1.f));
     }
     
     auto area = getLocalBounds();
