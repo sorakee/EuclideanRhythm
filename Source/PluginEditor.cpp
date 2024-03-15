@@ -185,7 +185,7 @@ void EuclideanRhythmAudioProcessorEditor::eventHandler(EuclideanRhythmAudioProce
                 p.reset(i);
                 p.setInit(i, true);
 
-                visualizer.getNeedle(i)->stopNeedle();
+                visualizer.getNeedle(i)->setAngle(-juce::MathConstants<float>::halfPi);
                 visualizer.getNeedle(i)->startNeedle(p.getInterval(i));
             };
 
