@@ -217,6 +217,7 @@ void EuclideanRhythmAudioProcessorEditor::eventHandler(EuclideanRhythmAudioProce
                 }
 
                 p.reset(i);
+                visualizer.getNeedle(i)->startNeedle(p.getInterval(i));
                 visualizer.getNeedle(i)->resetNeedle();
             }
         };
