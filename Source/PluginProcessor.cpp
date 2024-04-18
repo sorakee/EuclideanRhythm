@@ -435,7 +435,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout
         layout.add(std::make_unique<juce::AudioParameterFloat>(volumeParam, volumeParam,
             juce::NormalisableRange<float>(0.f, 1.f, 0.01f), 0.5f));
         layout.add(std::make_unique<juce::AudioParameterFloat>(speedParam, speedParam,
-            juce::NormalisableRange<float>(0.f, 2.f, 0.1f), 1.f));
+            juce::NormalisableRange<float>(0.1f, 2.f, 0.1f), 1.f));
     }
 
     // TODO (OPTIONAL) : Add velocity/speed parameter to manipulate 
